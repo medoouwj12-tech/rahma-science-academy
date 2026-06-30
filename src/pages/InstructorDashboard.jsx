@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { Crown, Sparkles, ArrowLeft, Calendar, Trophy, Zap } from 'lucide-react';
 import { statsCards } from '../data/mockData';
-import StatsCard from './StatsCard';
-import RevenueChart from './RevenueChart';
-import CourseManager from './CourseManager';
-import QuizCreator from './QuizCreator';
-import SecurityMonitor from './SecurityMonitor';
-import CountUp from './CountUp';
+import StatsCard from '../components/StatsCard';
+import RevenueChart from '../components/RevenueChart';
+import CourseManager from '../components/CourseManager';
+import QuizCreator from '../components/QuizCreator';
+import SecurityMonitor from '../components/SecurityMonitor';
+import CountUp from '../components/CountUp';
 
 /**
  * InstructorDashboard — the main page.
