@@ -45,10 +45,10 @@ export default function CourseManager() {
         <div>
           <h3 className="flex items-center gap-2 font-display text-xl font-bold text-white">
             <Layers className="h-5 w-5 text-gold-400" strokeWidth={1.8} />
-            إدارة الدورات والمحتوى
+            إدارة المناهج والمحتوى
           </h3>
           <p className="mt-1 text-xs text-white/50">
-            أنشئي، حرّري، وانشري دوراتكِ بسهولة تامة
+            أنشئي، حرّري، وانشري مناهج العلوم بسهولة تامة
           </p>
         </div>
 
@@ -59,7 +59,7 @@ export default function CourseManager() {
           className="btn-gold gap-2 px-5 py-2.5 text-sm"
         >
           <Plus className="h-4 w-4" strokeWidth={2.5} />
-          دورة جديدة
+          منهج جديد
         </motion.button>
       </div>
 
@@ -70,7 +70,7 @@ export default function CourseManager() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ابحثي عن دورة..."
+            placeholder="ابحثي عن منهج..."
             className="w-full rounded-lg border border-white/10 bg-white/[0.02] py-2 pl-3 pr-9 text-sm text-white placeholder:text-white/40 outline-none focus:border-gold-400/40"
           />
         </div>
@@ -120,9 +120,9 @@ export default function CourseManager() {
             <Plus className="h-6 w-6 text-gold-300" strokeWidth={2} />
           </div>
           <div>
-            <p className="font-bold text-white">أنشئي دورة جديدة</p>
+            <p className="font-bold text-white">أنشئي منهج جديد</p>
             <p className="mt-1 text-xs text-white/50">
-              ابدئي ببناء تجربة تعليمية فاخرة لطلابكِ
+              ابدئي ببناء منهج علوم متكامل لطلابكِ
             </p>
           </div>
         </motion.button>
@@ -178,7 +178,7 @@ function CourseCard({ course, index }) {
             <CountUp value={course.rating} decimals={2} />
           </div>
           <div className="font-display text-base font-bold text-white drop-shadow-lg">
-            {course.price} <span className="text-xs font-medium">ج.م</span>
+            {course.price} <span className="text-xs font-medium">ج.م / حصة</span>
           </div>
         </div>
       </div>
@@ -225,7 +225,7 @@ function CourseCard({ course, index }) {
                   <Upload className="h-3.5 w-3.5" /> إضافة محاضرة
                 </button>
                 <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10">
-                  <Trash2 className="h-3.5 w-3.5" /> حذف الدورة
+                  <Trash2 className="h-3.5 w-3.5" /> حذف المنهج
                 </button>
               </motion.div>
             )}
@@ -282,10 +282,10 @@ function CreateCourseModal({ onClose }) {
         <div className="relative flex items-center justify-between">
           <div>
             <h3 className="font-display text-xl font-bold gold-text">
-              دورة جديدة
+              منهج جديد
             </h3>
             <p className="mt-1 text-xs text-white/50">
-              أنشئي تجربة تعليمية فاخرة لطلابكِ
+              أنشئي منهج علوم لطلابكِ في دقائق
             </p>
           </div>
           <button
@@ -297,11 +297,11 @@ function CreateCourseModal({ onClose }) {
         </div>
 
         <form className="relative mt-6 space-y-4">
-          <Field label="عنوان الدورة" placeholder="مثلاً: الكيمياء — الصف الثالث الثانوي" />
-          <Field label="الوصف المختصر" placeholder="ملخص جذاب للدورة..." textarea />
+          <Field label="عنوان المنهج" placeholder="مثلاً: العلوم — المرحلة الإعدادية" />
+          <Field label="الوصف المختصر" placeholder="ملخص جذاب للمنهج..." textarea />
           <div className="grid grid-cols-2 gap-3">
-            <Field label="السعر (ج.م)" placeholder="1200" />
-            <Field label="المستوى" placeholder="ثانوي — الفصل الأول" />
+            <Field label="سعر الحصة (ج.م)" placeholder="40" />
+            <Field label="المرحلة الدراسية" placeholder="إعدادي — الترم الأول" />
           </div>
 
           {/* Video upload */}
@@ -330,7 +330,7 @@ function CreateCourseModal({ onClose }) {
             </button>
             <button type="button" className="btn-gold px-5 py-2.5 text-xs">
               <Plus className="h-4 w-4" strokeWidth={2.5} />
-              إنشاء الدورة
+              إنشاء المنهج
             </button>
           </div>
         </form>

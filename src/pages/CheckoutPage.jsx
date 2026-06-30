@@ -69,7 +69,7 @@ export default function CheckoutPage() {
             تم الاشتراك <span className="gold-text">بنجاح!</span>
           </h1>
           <p className="mt-2 text-sm text-white/65">
-            مرحباً بكِ في "{course.title}". ستجدين الدورة في لوحة الطالب.
+            مرحباً بكِ في "{course.title}". ستجدين المنهج في لوحة الطالب.
           </p>
           <div className="mt-6 flex justify-center gap-2">
             <Link to="/student" className="btn-gold px-5 py-2.5 text-sm">
@@ -97,7 +97,7 @@ export default function CheckoutPage() {
           </Link>
           <ChevronLeft className="h-3 w-3" />
           <Link to="/#courses" className="hover:text-gold-200">
-            الدورات
+            مناهج العلوم
           </Link>
           <ChevronLeft className="h-3 w-3" />
           <span className="text-white/80">إتمام الطلب</span>
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
 
               {/* Pricing */}
               <div className="relative mt-5 space-y-2 border-t border-white/5 pt-4 text-sm">
-                <Row label="سعر الدورة" value={`${subtotal.toLocaleString()} ج.م`} />
+                <Row label="سعر الحصة" value={`${subtotal} ج.م`} />
                 {applied && (
                   <Row
                     label="الخصم (20%)"

@@ -20,65 +20,65 @@ import { courses } from '../data/mockData';
 const enrolledCourses = [
   {
     id: 1,
-    title: 'الكيمياء — الصف الثالث الثانوي',
-    emoji: '⚗️',
-    cover: 'from-amber-400 via-yellow-500 to-amber-700',
-    chapters: 12,
+    title: 'العلوم — المرحلة الابتدائية',
+    emoji: '🌱',
+    cover: 'from-emerald-400 via-green-500 to-emerald-700',
+    chapters: 8,
     totalChapters: 12,
-    lectures: 68,
-    totalLectures: 84,
-    progress: 81,
-    nextLecture: 'التفاعلات الكيميائية — الجزء الثاني',
-    nextDuration: '24 دقيقة',
-    score: 94,
+    lectures: 24,
+    totalLectures: 36,
+    progress: 67,
+    nextLecture: 'النباتات — أجزاء الزهرة والتكاثر',
+    nextDuration: '22 دقيقة',
+    score: 92,
   },
   {
     id: 2,
-    title: 'الفيزياء — الصف الثاني الثانوي',
-    emoji: '🧪',
-    cover: 'from-cyan-400 via-sky-500 to-blue-700',
-    chapters: 8,
-    totalChapters: 10,
-    lectures: 52,
-    totalLectures: 72,
-    progress: 72,
-    nextLecture: 'قوانين نيوتن — تطبيقات',
-    nextDuration: '32 دقيقة',
+    title: 'العلوم — المرحلة الإعدادية',
+    emoji: '🔬',
+    cover: 'from-amber-400 via-yellow-500 to-amber-700',
+    chapters: 9,
+    totalChapters: 12,
+    lectures: 30,
+    totalLectures: 42,
+    progress: 75,
+    nextLecture: 'الطاقة وتحولاتها — الجزء الثاني',
+    nextDuration: '28 دقيقة',
     score: 88,
   },
   {
-    id: 5,
-    title: 'اللغة العربية — النحو والبلاغة',
-    emoji: '📖',
-    cover: 'from-violet-400 via-purple-500 to-violet-700',
-    chapters: 11,
+    id: 3,
+    title: 'الساينس — الثانوي التجريبي',
+    emoji: '🧪',
+    cover: 'from-cyan-400 via-sky-500 to-blue-700',
+    chapters: 10,
     totalChapters: 14,
-    lectures: 78,
-    totalLectures: 96,
-    progress: 81,
-    nextLecture: 'البلاغة — التشبيه والاستعارة',
-    nextDuration: '28 دقيقة',
+    lectures: 38,
+    totalLectures: 56,
+    progress: 68,
+    nextLecture: 'Genetics — قوانين مندل',
+    nextDuration: '35 دقيقة',
     score: 91,
   },
 ];
 
 const upcoming = [
   {
-    title: 'اختبار الكيمياء — الوحدة الثالثة',
+    title: 'اختبار العلوم — المادة وحالاتها',
     date: 'الأحد 15:00',
-    duration: '30 دقيقة',
+    duration: '25 دقيقة',
     type: 'quiz',
     color: 'rose',
   },
   {
-    title: 'بث مباشر — مراجعة الفيزياء',
+    title: 'بث مباشر — مراجعة الساينس',
     date: 'الإثنين 19:00',
     duration: '60 دقيقة',
     type: 'live',
     color: 'gold',
   },
   {
-    title: 'تسليم بحث الأحياء',
+    title: 'تسليم ملخص الطاقة — إعدادي',
     date: 'الثلاثاء 23:59',
     duration: '',
     type: 'task',
@@ -110,11 +110,11 @@ export default function StudentDashboard() {
             <p className="mt-2 text-sm text-white/60 lg:text-base">
               أنهيتي{' '}
               <span className="font-bold text-gold-200">
-                <CountUp value={198} /> محاضرة
-              </span>{' '}
-              هذا الشهر. باقي{' '}
-              <span className="font-bold text-gold-200">
                 <CountUp value={42} /> محاضرة
+              </span>{' '}
+              هذا الشهر في مادة العلوم. باقي{' '}
+              <span className="font-bold text-gold-200">
+                <CountUp value={12} /> محاضرة
               </span>{' '}
               لإكمال هدفكِ.
             </p>
@@ -151,22 +151,22 @@ export default function StudentDashboard() {
 
       {/* Stats */}
       <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <QuickStat icon={BookOpen} value="12" label="دورات نشطة" delay={0.05} />
+        <QuickStat icon={BookOpen} value="3" label="مناهج مسجَّلة" delay={0.05} />
         <QuickStat
           icon={PlayCircle}
-          value="198"
+          value="42"
           label="محاضرة شاهدتيها"
           delay={0.1}
         />
         <QuickStat
           icon={CheckCircle2}
-          value="46"
+          value="18"
           label="اختبار اجتزتيه"
           delay={0.15}
         />
         <QuickStat
           icon={Award}
-          value="4"
+          value="3"
           label="شهادات محصلة"
           delay={0.2}
         />

@@ -168,7 +168,7 @@ export default function SecurityMonitor() {
             الطلاب النشطون الآن
           </h4>
           <p className="mt-1 text-xs text-white/50">
-            آخر النشاطات في الدورات المباشرة
+            آخر النشاطات في الحصص المباشرة
           </p>
 
           <div className="mt-5 space-y-3">

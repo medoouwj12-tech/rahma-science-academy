@@ -16,8 +16,8 @@ import CountUp from '../components/CountUp';
 const upcomingSessions = [
   {
     id: 1,
-    title: 'مراجعة شاملة — الكيمياء',
-    course: 'الكيمياء — الصف الثالث',
+    title: 'مراجعة شاملة — العلوم للصف السادس',
+    course: 'العلوم — ابتدائي',
     date: 'الإثنين 15 يوليو',
     time: '19:00',
     duration: '90 دقيقة',
@@ -28,8 +28,8 @@ const upcomingSessions = [
   },
   {
     id: 2,
-    title: 'حل أسئلة الفيزياء — الميكانيكا',
-    course: 'الفيزياء — الصف الثاني',
+    title: 'حل أسئلة — الطاقة وتحولاتها',
+    course: 'العلوم — إعدادي',
     date: 'الأربعاء 17 يوليو',
     time: '20:00',
     duration: '60 دقيقة',
@@ -40,8 +40,8 @@ const upcomingSessions = [
   },
   {
     id: 3,
-    title: 'بلاغة — أساليب الخبر والإنشاء',
-    course: 'اللغة العربية',
+    title: 'Genetics — قوانين مندل والتطبيقات',
+    course: 'الساينس — ثانوي تجريبي',
     date: 'الخميس 18 يوليو',
     time: '18:00',
     duration: '75 دقيقة',
@@ -53,8 +53,8 @@ const upcomingSessions = [
 ];
 
 const liveNow = {
-  title: 'بث مباشر الآن — مراجعة الأحياء',
-  course: 'الأحياء — الصف الثالث',
+  title: 'بث مباشر الآن — مراجعة النباتات والبيئة',
+  course: 'العلوم — ابتدائي',
   startedAt: 'منذ 12 دقيقة',
   attendees: 482,
 };

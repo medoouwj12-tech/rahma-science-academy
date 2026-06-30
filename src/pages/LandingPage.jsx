@@ -81,7 +81,7 @@ function Navbar() {
             الرئيسية
           </a>
           <a href="#courses" className="transition-colors hover:text-gold-200">
-            الدورات
+            مناهج العلوم
           </a>
           <a href="#why" className="transition-colors hover:text-gold-200">
             لماذا نحن
@@ -149,13 +149,10 @@ function HeroSection() {
           </h1>
 
           <p className="mt-6 text-base leading-relaxed text-white/65 sm:text-lg lg:max-w-xl lg:text-xl">
-            تجربة تعليمية <span className="font-bold text-gold-200">فاخرة</span>{' '}
-            تجمع بين أحدث أساليب الشرح، اختبارات تفاعلية، ومتابعة شخصية
-            لطلاب الثانوية والجامعة. انضمي لـ{' '}
-            <span className="font-bold text-gold-200">
-              <CountUp value={10000} />+
-            </span>{' '}
-            طالب يحققون أعلى الدرجات.
+            تجربة تعليمية <span className="font-bold text-gold-200">متكاملة</span>{' '}
+            في مادة العلوم — للمرحلة الابتدائية والإعدادية والثانوي التجريبي —
+            على المنهج المصري. ملخصات، اختبارات تفاعلية، وفيديوهات شرح
+            بأسلوب بسيط ومباشر.
           </p>
 
           {/* CTAs */}
@@ -172,7 +169,7 @@ function HeroSection() {
               className="btn-ghost-gold gap-3 px-7 py-3.5 text-sm"
             >
               <PlayCircle className="h-4 w-4" />
-              استكشفي الدورات
+              استكشفي مناهج العلوم
             </a>
           </div>
 
@@ -248,9 +245,9 @@ function DashboardMockup() {
         {/* Mini stats */}
         <div className="grid grid-cols-3 gap-2">
           {[
-            { label: 'دوراتي', value: '12', icon: BookOpen },
-            { label: 'محاضرات', value: '184', icon: PlayCircle },
-            { label: 'شهادات', value: '4', icon: Award },
+            { label: 'مناهجي', value: '3', icon: BookOpen },
+            { label: 'محاضرات', value: '134', icon: PlayCircle },
+            { label: 'شهادات', value: '3', icon: Award },
           ].map((s) => (
             <div
               key={s.label}
@@ -270,11 +267,11 @@ function DashboardMockup() {
           <div className="relative h-24 bg-gradient-to-br from-amber-500 via-yellow-600 to-amber-800">
             <div className="absolute inset-0 bg-noise opacity-30 mix-blend-overlay" />
             <div className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-lg bg-black/40 text-base backdrop-blur-md">
-              ⚗️
+              🔬
             </div>
             <div className="absolute bottom-2 left-2 right-2 flex items-end justify-between">
               <span className="text-[10px] font-semibold text-white">
-                الكيمياء — ثانوي
+                العلوم — إعدادي
               </span>
               <span className="rounded-full bg-black/40 px-2 py-0.5 text-[9px] font-bold text-gold-200 backdrop-blur-md">
                 الفصل 5
@@ -359,9 +356,9 @@ function DashboardMockup() {
 /* ====================== STATS ====================== */
 function StatsSection() {
   const stats = [
-    { label: 'طالب نشط', value: 10000, icon: Users, suffix: '+' },
-    { label: 'دورة احترافية', value: 50, icon: BookOpen, suffix: '+' },
-    { label: 'اختبار تفاعلي', value: 200, icon: ClipboardList, suffix: '+' },
+    { label: 'طالب نشط', value: 1240, icon: Users, suffix: '+' },
+    { label: 'منهج دراسي', value: 3, icon: BookOpen, suffix: '' },
+    { label: 'اختبار وملخص', value: 150, icon: ClipboardList, suffix: '+' },
     { label: 'معدل النجاح', value: 98, icon: Trophy, suffix: '%' },
   ];
 
@@ -424,16 +421,17 @@ function FeaturedCourses() {
         >
           <div>
             <span className="chip mb-3">
-              <Sparkles className="h-3 w-3" /> دورات مميزة
+              <Sparkles className="h-3 w-3" /> مناهج العلوم
             </span>
             <h2 className="font-display text-3xl font-black text-white lg:text-4xl">
-              دورات <span className="gold-text">احترافية</span> مصممة
-              <br className="hidden lg:block" /> لطلاب{' '}
-              <span className="gold-text">الطموحين</span>
+              مناهج <span className="gold-text">العلوم</span> على
+              <br className="hidden lg:block" />{' '}
+              <span className="gold-text">المنهج المصري</span>
             </h2>
           </div>
           <p className="max-w-md text-sm text-white/60">
-            محتوى حصري، شرح مبسّط، اختبارات تفاعلية، ومتابعة شخصية لكل طالب.
+            ثلاث مراحل دراسية، محتوى متكامل: ملخصات، اختبارات تفاعلية،
+            فيديوهات شرح، ومتابعة شخصية لكل طالب.
           </p>
         </motion.div>
 
@@ -493,9 +491,12 @@ function CourseCard({ course, index }) {
 
         <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
           <div>
-            <p className="text-[10px] text-white/40">السعر</p>
+            <p className="text-[10px] text-white/40">سعر الحصة</p>
             <p className="font-display text-lg font-bold gold-text">
-              {course.price} ج.م
+              {course.price}{' '}
+              <span className="text-[11px] font-semibold text-white/70">
+                {course.priceUnit}
+              </span>
             </p>
           </div>
           <Link
@@ -603,20 +604,20 @@ function TestimonialsSection() {
   const testimonials = [
     {
       name: 'سارة عبد الرحمن',
-      grade: 'الثالث الثانوي',
-      text: 'والله المنصة دي غيرت مستواي تماماً. شرح أ. رحمة واضح جداً، والاختبارات بتدربك على كل حاجة.',
+      grade: 'الصف الثالث الإعدادي',
+      text: 'والله المنصة دي غيرت مستواي في العلوم تماماً. شرح أ. رحمة واضح جداً، والاختبارات بتدربك على كل حاجة.',
       score: '98%',
     },
     {
       name: 'أحمد محمود',
-      grade: 'الثاني الثانوي',
-      text: 'جربت منصات كتير قبل كده، مفيش زيها. النظام فاخر والمحتوى منظم بشكل احترافي.',
+      grade: 'الصف الثاني الثانوي — تجريبي',
+      text: 'منصة ممتازة للساينس، مفيش زيها. الشرح مبسط والمحتوى منظم بشكل احترافي. درجاتي اتحسنت جداً.',
       score: '95%',
     },
     {
       name: 'منى الحسيني',
-      grade: 'الثانوية العامة',
-      text: 'من ساعة ما اشتركت، درجاتي في الكيمياء والفيزياء اتحسنت بشكل ملحوظ. شكراً أ. رحمة!',
+      grade: 'الصف الخامس الابتدائي',
+      text: 'من ساعة ما اشتركت، بنتي بقت تحب مادة العلوم. الملخصات والفيديوهات ساعدتها تفهم بسرعة.',
       score: '99%',
     },
   ];
@@ -725,7 +726,7 @@ function CTASection() {
                 href="#courses"
                 className="btn-ghost-gold px-8 py-4 text-sm"
               >
-                تصفحي الدورات
+                تصفحي مناهج العلوم
               </a>
             </div>
           </div>
@@ -756,8 +757,9 @@ function Footer() {
               </div>
             </div>
             <p className="mt-4 max-w-md text-sm text-white/55">
-              منصة تعليمية فاخرة لطلاب الثانوية والجامعة في العالم العربي.
-              محتوى احترافي، اختبارات تفاعلية، ومتابعة شخصية.
+              منصة تعليمية متخصصة في مادة العلوم — للمرحلة الابتدائية
+              والإعدادية والثانوي التجريبي — على المنهج المصري. ملخصات،
+              اختبارات، وفيديوهات شرح بأسلوب بسيط.
             </p>
           </div>
 
@@ -773,7 +775,7 @@ function Footer() {
               </li>
               <li>
                 <a href="#courses" className="hover:text-gold-200">
-                  الدورات
+                  مناهج العلوم
                 </a>
               </li>
               <li>

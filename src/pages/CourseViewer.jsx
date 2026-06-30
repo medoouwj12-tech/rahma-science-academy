@@ -23,16 +23,16 @@ import { courses } from '../data/mockData';
 import Watermark from '../components/Watermark';
 
 const playlist = [
-  { id: 1, title: 'مقدمة الدورة وأهدافها', duration: '08:42', completed: true, locked: false, current: false },
-  { id: 2, title: 'الجدول الدوري — الجزء الأول', duration: '24:18', completed: true, locked: false, current: false },
-  { id: 3, title: 'الجدول الدوري — الجزء الثاني', duration: '22:05', completed: true, locked: false, current: false },
-  { id: 4, title: 'التفاعلات الكيميائية', duration: '28:31', completed: true, locked: false, current: false },
-  { id: 5, title: 'التفاعلات الكيميائية — الجزء الثاني', duration: '24:18', completed: false, locked: false, current: true },
-  { id: 6, title: 'الروابط الكيميائية', duration: '26:45', completed: false, locked: false, current: false },
-  { id: 7, title: 'الأحماض والقواعد', duration: '32:12', completed: false, locked: false, current: false },
-  { id: 8, title: 'اختبار الوحدة الأولى', duration: '30:00', completed: false, locked: false, current: false },
-  { id: 9, title: 'الكيمياء العضوية — مقدمة', duration: '28:00', completed: false, locked: true, current: false },
-  { id: 10, title: 'الهيدروكربونات', duration: '26:30', completed: false, locked: true, current: false },
+  { id: 1, title: 'مقدمة المنهج وأهدافه', duration: '08:42', completed: true, locked: false, current: false },
+  { id: 2, title: 'الوحدة الأولى — الجزء الأول', duration: '24:18', completed: true, locked: false, current: false },
+  { id: 3, title: 'الوحدة الأولى — الجزء الثاني', duration: '22:05', completed: true, locked: false, current: false },
+  { id: 4, title: 'الوحدة الثانية — شرح مفصّل', duration: '28:31', completed: true, locked: false, current: false },
+  { id: 5, title: 'الوحدة الثانية — تمارين محلولة', duration: '24:18', completed: false, locked: false, current: true },
+  { id: 6, title: 'الوحدة الثالثة — المفاهيم الأساسية', duration: '26:45', completed: false, locked: false, current: false },
+  { id: 7, title: 'الوحدة الثالثة — تطبيقات عملية', duration: '32:12', completed: false, locked: false, current: false },
+  { id: 8, title: 'اختبار الوحدة الثانية', duration: '30:00', completed: false, locked: false, current: false },
+  { id: 9, title: 'الوحدة الرابعة — مقدمة', duration: '28:00', completed: false, locked: true, current: false },
+  { id: 10, title: 'الوحدة الرابعة — الجزء الثاني', duration: '26:30', completed: false, locked: true, current: false },
 ];
 
 export default function CourseViewer() {
@@ -77,7 +77,7 @@ export default function CourseViewer() {
         className="mb-4 flex items-center gap-2 text-xs text-white/50"
       >
         <Link to="/student" className="hover:text-gold-200">
-          دوراتي
+          مناهجي
         </Link>
         <ChevronLeft className="h-3 w-3" />
         <span className="text-white/80">{course.title}</span>
@@ -123,7 +123,7 @@ export default function CourseViewer() {
                 {playlist.find((p) => p.current)?.title}
               </p>
               <p className="mt-1 text-xs text-white/60">
-                محاضرة 5 من 84 • {course.title}
+                محاضرة 5 من {course.lectures} • {course.title}
               </p>
             </div>
 
@@ -220,15 +220,15 @@ export default function CourseViewer() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
                   <span className="chip mb-2">
-                    محاضرة 5 • الفصل 2
+                    محاضرة 5 • الوحدة 2
                   </span>
                   <h1 className="font-display text-2xl font-bold text-white">
                     {playlist.find((p) => p.current)?.title}
                   </h1>
-                  <p className="mt-2 text-sm text-white/60">
-                    في هذه المحاضرة نغطي التفاعلات الكيميائية بالتفصيل مع
-                    تمارين محلولة. المحتوى محمي ضد النسخ بعلامة مائية متحركة.
-                  </p>
+              <p className="mt-2 text-sm text-white/60">
+                في هذه المحاضرة نغطي الوحدة الثانية من منهج العلوم بالتفصيل
+                مع تمارين محلولة. المحتوى محمي ضد النسخ بعلامة مائية متحركة.
+              </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="btn-ghost-gold h-9 px-3 text-xs">
@@ -262,8 +262,8 @@ export default function CourseViewer() {
 
               <div className="mt-4 text-sm leading-relaxed text-white/70">
                 <p>
-                  محاضرة تفاعلية تشمل: شرح نظري مفصّل، 12 تمرين محلول،
-                  مثالين واقعيين من الحياة اليومية، وملخص PDF للتحميل.
+                  محاضرة تفاعلية في مادة العلوم تشمل: شرح نظري مفصّل،
+                  12 تمرين محلول، أمثلة من المنهج المصري، وملخص PDF للتحميل.
                 </p>
                 <ul className="mt-3 space-y-1">
                   <li className="flex items-center gap-2">
@@ -295,7 +295,7 @@ export default function CourseViewer() {
           <div className="sticky top-0 z-10 border-b border-white/5 bg-obsidian-light p-5 backdrop-blur-xl">
             <h3 className="flex items-center gap-2 font-display text-base font-bold text-white">
               <span className="text-lg">📚</span>
-              محاضرات الدورة
+              محاضرات المنهج
             </h3>
             <div className="mt-2 flex items-center justify-between text-[11px] text-white/55">
               <span>

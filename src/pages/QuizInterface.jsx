@@ -227,7 +227,7 @@ export default function QuizInterface() {
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-white/50">
-                  اختبار الكيمياء
+                  اختبار العلوم
                 </p>
                 <h1 className="font-display text-sm font-bold text-white lg:text-base">
                   اختبار الوحدة الثالثة
@@ -596,7 +596,7 @@ function QuizIntro({ onStart, total, maxScore }) {
             اختبار <span className="gold-text">الوحدة الثالثة</span>
           </h1>
           <p className="mt-2 text-base text-white/60">
-            كيمياء — الصف الثالث الثانوي
+            العلوم — المرحلة الإعدادية
           </p>
 
           <div className="my-8 grid grid-cols-3 gap-3">

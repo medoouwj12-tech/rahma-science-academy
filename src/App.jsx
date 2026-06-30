@@ -32,7 +32,7 @@ import Certificates from './pages/Certificates';
 import ProfilePage from './pages/ProfilePage';
 
 const studentNav = [
-  { id: '/student', label: 'دوراتي', icon: BookOpen },
+  { id: '/student', label: 'مناهجي', icon: BookOpen },
   { id: '/student/quizzes', label: 'الاختبارات', icon: ClipboardList },
   { id: '/student/live', label: 'البث المباشر', icon: Radio },
   { id: '/student/certificates', label: 'الشهادات', icon: Award },

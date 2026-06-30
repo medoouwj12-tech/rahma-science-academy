@@ -112,7 +112,7 @@ export default function ProfilePage() {
             <InfoRow
               icon={Target}
               label="المرحلة الدراسية"
-              value="الثانوية العامة — علمي"
+              value="الصف الثالث الإعدادي"
             />
           </div>
         </motion.div>
@@ -129,10 +129,10 @@ export default function ProfilePage() {
           </h2>
           <div className="space-y-3">
             {[
-              { emoji: '🏆', name: 'الأولى على الدفعة', desc: 'الفيزياء - مايو 2026' },
+              { emoji: '🏆', name: 'الأولى على الدفعة', desc: 'العلوم - مايو 2026' },
               { emoji: '🔥', name: 'سلسلة 14 يوم', desc: 'دراسة متتالية' },
               { emoji: '⭐', name: 'نجمة الامتحانات', desc: '100% في 5 اختبارات' },
-              { emoji: '🎯', name: 'محترفة الكيمياء', desc: 'إكمال جميع الفصول' },
+              { emoji: '🎯', name: 'محترفة العلوم', desc: 'إكمال جميع الفصول' },
             ].map((a, i) => (
               <div
                 key={a.name}

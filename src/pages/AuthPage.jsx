@@ -75,7 +75,7 @@ export default function AuthPage() {
             <p className="mt-2 text-xs text-white/55">
               {mode === 'signup'
                 ? 'أنشئي حسابكِ وابدئي رحلة التفوق'
-                : 'سجّلي دخولكِ للوصول لدوراتكِ'}
+                : 'سجّلي دخولكِ للوصول لمناهجكِ'}
             </p>
           </div>
 

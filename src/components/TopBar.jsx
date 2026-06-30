@@ -32,7 +32,7 @@ export default function TopBar({ onMenuClick }) {
           <Search className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
           <input
             type="text"
-            placeholder="ابحثي عن دورة، طالب، اختبار..."
+            placeholder="ابحثي عن منهج، طالب، اختبار..."
             className="w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-4 pr-11 text-sm text-white placeholder:text-white/40 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.05] focus:shadow-gold-glow"
           />
           <kbd className="absolute left-3 top-1/2 -translate-y-1/2 rounded-md border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-white/50">
@@ -51,7 +51,7 @@ export default function TopBar({ onMenuClick }) {
             className="btn-gold hidden gap-2 px-4 py-2.5 text-xs sm:inline-flex"
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />
-            دورة جديدة
+            منهج جديد
           </motion.button>
 
           {/* Mobile avatar */}
