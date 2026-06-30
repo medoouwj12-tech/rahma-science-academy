@@ -11,9 +11,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   LayoutDashboard,
   BookOpen,
-  ClipboardList,
+  LucideClipboardList as ClipboardList,
   Award,
-  Radio,
+  LucideRadio as Radio,
   User,
   Sparkles,
   Menu,

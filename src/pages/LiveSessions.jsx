@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import {
-  Radio,
+  LucideRadio as Radio,
   Calendar,
   Clock,
   Users,

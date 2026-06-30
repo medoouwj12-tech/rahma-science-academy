@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import {
-  ClipboardList,
+  LucideClipboardList as ClipboardList,
   Plus,
   Timer,
   CheckCircle2,

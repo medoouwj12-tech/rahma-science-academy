@@ -16,6 +16,8 @@ import {
   Shield,
   GraduationCap,
   Quote,
+  LucideClipboardList as ClipboardList,
+  LucideRadio as Radio,
 } from 'lucide-react';
 import CountUp from '../components/CountUp';
 import { courses } from '../data/mockData';

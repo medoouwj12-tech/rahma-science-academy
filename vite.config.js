@@ -9,6 +9,9 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      // Safest tree-shaking: keep all exports from problematic deps
+      // Fixes lucide-react ReferenceError where some icons got stripped
+      treeshake: 'safest',
       output: {
         manualChunks: {
           'lucide-react': ['lucide-react'],
