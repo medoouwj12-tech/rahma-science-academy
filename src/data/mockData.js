@@ -94,7 +94,7 @@ export const courses = [
     status: 'published',
     cover: 'from-amber-400 via-yellow-500 to-amber-700',
     emoji: '🔬',
-    color: '#2563EB',
+    color: '#D4AF37',
     stage: 'إعدادي',
   },
   {

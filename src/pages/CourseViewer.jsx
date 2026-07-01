@@ -115,7 +115,7 @@ export default function CourseViewer() {
                 ) : (
                   <Play
                     className="h-9 w-9 translate-x-0.5 text-gold-200"
-                    fill="currentColor"
+                    fill="#F3E5AB"
                   />
                 )}
               </motion.div>

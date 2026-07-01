@@ -120,22 +120,22 @@ export default function RevenueChart() {
         >
           <defs>
             <linearGradient id="rev-bar" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#60A5FA" />
-              <stop offset="50%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#2563EB" stopOpacity="0.6" />
+              <stop offset="0%" stopColor="#F3E5AB" />
+              <stop offset="50%" stopColor="#D4AF37" />
+              <stop offset="100%" stopColor="#B8941F" stopOpacity="0.6" />
             </linearGradient>
             <linearGradient id="rev-bar-hover" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#DBEAFE" />
-              <stop offset="100%" stopColor="#60A5FA" />
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="100%" stopColor="#F3E5AB" />
             </linearGradient>
             <linearGradient id="students-line" x1="0" x2="1" y1="0" y2="0">
-              <stop offset="0%" stopColor="#1D4ED8" />
-              <stop offset="50%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#60A5FA" />
+              <stop offset="0%" stopColor="#B8941F" />
+              <stop offset="50%" stopColor="#D4AF37" />
+              <stop offset="100%" stopColor="#F3E5AB" />
             </linearGradient>
             <linearGradient id="students-fill" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+              <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -149,13 +149,13 @@ export default function RevenueChart() {
                   y1={y}
                   x2={W - PAD_R}
                   y2={y}
-                  stroke="rgba(15,23,42,0.06)"
+                  stroke="rgba(255,255,255,0.04)"
                   strokeDasharray="3 4"
                 />
                 <text
                   x={PAD_L - 10}
                   y={y + 4}
-                  fill="rgba(15,23,42,0.45)"
+                  fill="rgba(255,255,255,0.35)"
                   fontSize="10"
                   textAnchor="end"
                   fontFamily="Cairo"
@@ -193,15 +193,15 @@ export default function RevenueChart() {
                   fill={hovered ? 'url(#rev-bar-hover)' : 'url(#rev-bar)'}
                   style={{
                     filter: hovered
-                      ? 'drop-shadow(0 0 14px rgba(37,99,235,0.4))'
-                      : 'drop-shadow(0 0 6px rgba(37,99,235,0.15))',
+                      ? 'drop-shadow(0 0 14px rgba(212,175,55,0.5))'
+                      : 'drop-shadow(0 0 6px rgba(212,175,55,0.2))',
                   }}
                 />
                 {hovered && (
                   <motion.text
                     x={x + barW / 2}
                     y={y - 8}
-                    fill="#2563EB"
+                    fill="#F3E5AB"
                     fontSize="11"
                     fontWeight="700"
                     textAnchor="middle"
@@ -236,7 +236,7 @@ export default function RevenueChart() {
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 1.6, delay: 0.7, ease: 'easeOut' }}
-            style={{ filter: 'drop-shadow(0 0 8px rgba(37,99,235,0.4))' }}
+            style={{ filter: 'drop-shadow(0 0 8px rgba(212,175,55,0.5))' }}
           />
 
           {/* Student points */}
@@ -246,7 +246,7 @@ export default function RevenueChart() {
                 cx={x}
                 cy={y}
                 r={hoverIdx === i ? 6 : 4}
-                fill="#3B82F6"
+                fill="#F3E5AB"
                 stroke="#000"
                 strokeWidth="2"
                 initial={{ scale: 0 }}
@@ -264,14 +264,14 @@ export default function RevenueChart() {
                 key={d.month}
                 x={x}
                 y={H - PAD_B + 25}
-                fill="rgba(15,23,42,0.6)"
+                fill="rgba(255,255,255,0.55)"
                 fontSize="11"
                 textAnchor="middle"
                 fontFamily="Cairo"
                 fontWeight={hoverIdx === i ? '700' : '500'}
                 style={{
                   fill:
-                    hoverIdx === i ? '#2563eb' : 'rgba(15,23,42,0.6)',
+                    hoverIdx === i ? '#F3E5AB' : 'rgba(255,255,255,0.55)',
                 }}
               >
                 {d.month}

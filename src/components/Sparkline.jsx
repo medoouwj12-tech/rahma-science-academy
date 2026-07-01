@@ -51,13 +51,13 @@ export default function Sparkline({
     >
       <defs>
         <linearGradient id={`spark-grad-${id}`} x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0%" stopColor="#1D4ED8" />
-          <stop offset="50%" stopColor="#3B82F6" />
-          <stop offset="100%" stopColor="#60A5FA" />
+          <stop offset="0%" stopColor="#B8941F" />
+          <stop offset="50%" stopColor="#D4AF37" />
+          <stop offset="100%" stopColor="#F3E5AB" />
         </linearGradient>
         <linearGradient id={`spark-fill-${id}`} x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+          <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#D4AF37" stopOpacity="0" />
         </linearGradient>
       </defs>
       <motion.path
@@ -83,7 +83,7 @@ export default function Sparkline({
           cx={last[0]}
           cy={last[1]}
           r="3"
-          fill="#3B82F6"
+          fill="#F3E5AB"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}

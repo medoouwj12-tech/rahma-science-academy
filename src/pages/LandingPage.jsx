@@ -301,9 +301,9 @@ function DashboardMockup() {
           <svg viewBox="0 0 200 40" className="h-10 w-full">
             <defs>
               <linearGradient id="mock-line" x1="0" x2="1">
-                <stop offset="0%" stopColor="#1D4ED8" />
-                <stop offset="50%" stopColor="#3B82F6" />
-                <stop offset="100%" stopColor="#60A5FA" />
+                <stop offset="0%" stopColor="#B8941F" />
+                <stop offset="50%" stopColor="#D4AF37" />
+                <stop offset="100%" stopColor="#F3E5AB" />
               </linearGradient>
             </defs>
             <path
@@ -312,7 +312,7 @@ function DashboardMockup() {
               stroke="url(#mock-line)"
               strokeWidth="2"
               strokeLinecap="round"
-              filter="drop-shadow(0 0 6px rgba(37,99,235,0.4))"
+              filter="drop-shadow(0 0 6px rgba(212,175,55,0.5))"
             />
           </svg>
         </div>
