@@ -11,9 +11,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   LayoutDashboard,
   BookOpen,
-  LucideClipboardList as ClipboardList,
+  ClipboardList,
   Award,
-  LucideRadio as Radio,
+  Radio,
   User,
   Sparkles,
   Menu,
@@ -30,6 +30,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import LiveSessions from './pages/LiveSessions';
 import Certificates from './pages/Certificates';
 import ProfilePage from './pages/ProfilePage';
+import { AuthProvider } from './lib/auth';
 
 const studentNav = [
   { id: '/student', label: 'مناهجي', icon: BookOpen },
@@ -41,19 +42,21 @@ const studentNav = [
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auth" element={<AuthPage />} />
-        <Route path="/checkout/:courseId" element={<CheckoutPage />} />
-        <Route
-          path="/instructor/*"
-          element={<InstructorShell />}
-        />
-        <Route path="/student/*" element={<StudentShell />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/checkout/:courseId" element={<CheckoutPage />} />
+          <Route
+            path="/instructor/*"
+            element={<InstructorShell />}
+          />
+          <Route path="/student/*" element={<StudentShell />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

@@ -20,7 +20,8 @@ import {
   LucideRadio as Radio,
 } from 'lucide-react';
 import CountUp from '../components/CountUp';
-import { courses } from '../data/mockData';
+import { useEffect, useState } from 'react';
+import { coursesApi } from '../lib/api';
 
 export default function LandingPage() {
   return (
@@ -408,7 +409,15 @@ function StatsSection() {
 
 /* ====================== FEATURED COURSES ====================== */
 function FeaturedCourses() {
-  const featured = courses.slice(0, 4);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    coursesApi.list().then((res) => {
+      setCourses(res.data || []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
 
   return (
     <section id="courses" className="relative mt-24 px-4 lg:mt-32 lg:px-8">
@@ -435,11 +444,19 @@ function FeaturedCourses() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((c, i) => (
-            <CourseCard key={c.id} course={c} index={i} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-card h-64 animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {courses.map((c, i) => (
+              <CourseCard key={c.id} course={c} index={i} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

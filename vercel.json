@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "**/*.js", "use": "@vercel/node", "config": { "includeFiles": ["api/package.json"] } },
+    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
+  ],
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" }
+  ]
+}
