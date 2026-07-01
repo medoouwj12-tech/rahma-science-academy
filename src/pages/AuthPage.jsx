@@ -22,6 +22,7 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const initialMode = params.get('signup') ? 'signup' : 'signin';
   const [mode, setMode] = useState(initialMode); // 'signin' | 'signup'
+  const [role, setRole] = useState('student'); // 'student' | 'instructor'
 
   return (
     <div
@@ -80,7 +81,7 @@ export default function AuthPage() {
           </div>
 
           {/* Mode switcher */}
-          <div className="mb-6 flex rounded-xl border border-white/10 bg-white/[0.02] p-1">
+          <div className="mb-4 flex rounded-xl border border-white/10 bg-white/[0.02] p-1">
             {[
               { id: 'signin', label: 'تسجيل الدخول' },
               { id: 'signup', label: 'حساب جديد' },
@@ -95,6 +96,28 @@ export default function AuthPage() {
                 }`}
               >
                 {m.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Role switcher */}
+          <div className="mb-6 flex rounded-xl border border-white/5 bg-white/[0.01] p-1">
+            {[
+              { id: 'student', label: 'دخول طالبة' },
+              { id: 'instructor', label: 'دخول الأستاذة رحمة' },
+            ].map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setRole(r.id)}
+                className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-semibold transition-all flex items-center justify-center gap-1.5 ${
+                  role === r.id
+                    ? 'bg-gold-400/15 text-gold-100 border border-gold-400/30'
+                    : 'text-white/40 hover:text-white border border-transparent'
+                }`}
+              >
+                {r.id === 'instructor' && <Crown className="h-3 w-3 text-gold-300" />}
+                {r.label}
               </button>
             ))}
           </div>
@@ -126,7 +149,7 @@ export default function AuthPage() {
               transition={{ duration: 0.3 }}
               onSubmit={(e) => {
                 e.preventDefault();
-                navigate(mode === 'signup' ? '/student' : '/student');
+                navigate(role === 'instructor' ? '/instructor' : '/student');
               }}
               className="space-y-3"
             >
