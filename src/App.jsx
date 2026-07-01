@@ -31,6 +31,7 @@ import LiveSessions from './pages/LiveSessions';
 import Certificates from './pages/Certificates';
 import ProfilePage from './pages/ProfilePage';
 import { AuthProvider } from './lib/auth';
+import WhatsAppButton from './components/WhatsAppButton';
 
 const studentNav = [
   { id: '/student', label: 'مناهجي', icon: BookOpen },
@@ -55,6 +56,7 @@ export default function App() {
           <Route path="/student/*" element={<StudentShell />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <WhatsAppButton />
       </Router>
     </AuthProvider>
   );

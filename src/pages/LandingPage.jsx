@@ -809,12 +809,26 @@ function Footer() {
           </div>
 
           <div>
-            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-white/50">
-              التواصل
+            <p className="mb-3 text-xs font-bold uppercase tracking-wider text-white/50 font-display">
+              تواصل معنا
             </p>
             <ul className="space-y-2 text-sm text-white/60">
               <li>info@rahma-khaled.com</li>
-              <li>+20 100 ••• 8888</li>
+              <li>
+                الدعم الفني (واتساب):{' '}
+                <a
+                  href="https://wa.me/201033304460?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D9%85%D9%83%D9%86%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%83%D9%88%D8%B1%D8%B3%D8%A7%D8%AA%D8%9F"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono font-bold text-gold-300 hover:text-gold-100 transition-colors"
+                >
+                  01033304460
+                </a>
+              </li>
+              <li>
+                تحويل كاش / إنستاباي:{' '}
+                <span className="font-mono font-bold text-white">01007466197</span>
+              </li>
               <li>القاهرة، مصر</li>
             </ul>
           </div>
