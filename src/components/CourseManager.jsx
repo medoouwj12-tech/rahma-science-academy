@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import {
   Plus,
@@ -12,16 +12,20 @@ import {
   Upload,
   Layers,
   Search,
+  X,
 } from 'lucide-react';
 import { courses } from '../data/mockData';
 import CountUp from './CountUp';
 
 export default function CourseManager() {
+  const [courseList, setCourseList] = useState([...courses]);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [previewCourse, setPreviewCourse] = useState(null);
 
-  const filtered = courses.filter((c) => {
+  const filtered = courseList.filter((c) => {
     if (filter !== 'all' && c.status !== filter) return false;
     if (
       search &&
@@ -31,6 +35,31 @@ export default function CourseManager() {
       return false;
     return true;
   });
+
+  const handleDeleteCourse = (courseId) => {
+    if (confirm('هل أنتِ متأكدة من حذف هذا المنهج؟ لا يمكن التراجع عن هذا الإجراء.')) {
+      setCourseList(courseList.filter(c => c.id !== courseId));
+    }
+  };
+
+  const handleCreateCourse = (newCourse) => {
+    setCourseList([...courseList, {
+      ...newCourse,
+      id: Date.now(),
+      enrolled: 0,
+      rating: 0,
+      status: 'draft',
+      cover: 'from-violet-400 via-purple-500 to-violet-700',
+      emoji: '📚',
+      color: '#8B5CF6',
+    }]);
+    setShowCreate(false);
+  };
+
+  const handleEditCourse = (updated) => {
+    setCourseList(courseList.map(c => c.id === updated.id ? { ...c, ...updated } : c));
+    setEditingCourse(null);
+  };
 
   return (
     <motion.section
@@ -77,7 +106,7 @@ export default function CourseManager() {
 
         <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.02] p-1 text-xs font-semibold">
           {[
-            { id: 'all', label: `الكل (${courses.length})` },
+            { id: 'all', label: `الكل (${courseList.length})` },
             { id: 'published', label: 'منشور' },
             { id: 'draft', label: 'مسودة' },
           ].map((f) => (
@@ -95,7 +124,10 @@ export default function CourseManager() {
           ))}
         </div>
 
-        <button className="btn-ghost-gold h-9 px-3 text-xs">
+        <button
+          onClick={() => alert('جاري فتح مدير رفع الفيديوهات...')}
+          className="btn-ghost-gold h-9 px-3 text-xs"
+        >
           <Upload className="h-3.5 w-3.5" />
           رفع فيديو
         </button>
@@ -104,7 +136,14 @@ export default function CourseManager() {
       {/* Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((c, i) => (
-          <CourseCard key={c.id} course={c} index={i} />
+          <CourseCard
+            key={c.id}
+            course={c}
+            index={i}
+            onEdit={() => setEditingCourse(c)}
+            onDelete={() => handleDeleteCourse(c.id)}
+            onPreview={() => setPreviewCourse(c)}
+          />
         ))}
 
         {/* New course placeholder */}
@@ -129,12 +168,24 @@ export default function CourseManager() {
       </div>
 
       {/* Create Modal */}
-      {showCreate && <CreateCourseModal onClose={() => setShowCreate(false)} />}
+      <AnimatePresence>
+        {showCreate && <CreateCourseModal onClose={() => setShowCreate(false)} onCreate={handleCreateCourse} />}
+      </AnimatePresence>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editingCourse && <EditCourseModal course={editingCourse} onClose={() => setEditingCourse(null)} onSave={handleEditCourse} />}
+      </AnimatePresence>
+
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {previewCourse && <PreviewCourseModal course={previewCourse} onClose={() => setPreviewCourse(null)} />}
+      </AnimatePresence>
     </motion.section>
   );
 }
 
-function CourseCard({ course, index }) {
+function CourseCard({ course, index, onEdit, onDelete, onPreview }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -201,11 +252,17 @@ function CourseCard({ course, index }) {
 
         {/* Action row */}
         <div className="mt-5 flex items-center gap-2">
-          <button className="btn-gold flex-1 py-2 text-xs">
+          <button
+            onClick={onEdit}
+            className="btn-gold flex-1 py-2 text-xs"
+          >
             <Edit3 className="h-3.5 w-3.5" strokeWidth={2.5} />
             تعديل
           </button>
-          <button className="btn-ghost-gold h-9 w-9 p-0">
+          <button
+            onClick={onPreview}
+            className="btn-ghost-gold h-9 w-9 p-0"
+          >
             <Eye className="h-4 w-4" />
           </button>
           <div className="relative">
@@ -221,10 +278,16 @@ function CourseCard({ course, index }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="absolute left-0 top-full z-10 mt-1 min-w-[140px] rounded-lg border border-white/10 bg-obsidian-light p-1 shadow-xl"
               >
-                <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-white/80 hover:bg-white/5">
+                <button
+                  onClick={() => { setMenuOpen(false); alert('تمت إضافة محاضرة جديدة بنجاح!'); }}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-white/80 hover:bg-white/5"
+                >
                   <Upload className="h-3.5 w-3.5" /> إضافة محاضرة
                 </button>
-                <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10">
+                <button
+                  onClick={() => { setMenuOpen(false); onDelete(); }}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10"
+                >
                   <Trash2 className="h-3.5 w-3.5" /> حذف المنهج
                 </button>
               </motion.div>
@@ -261,7 +324,28 @@ function Mini({ icon: Icon, label, value, gold = false }) {
   );
 }
 
-function CreateCourseModal({ onClose }) {
+function CreateCourseModal({ onClose, onCreate }) {
+  const [title, setTitle] = useState('');
+  const [subtitle, setSubtitle] = useState('');
+  const [price, setPrice] = useState('40');
+  const [stage, setStage] = useState('');
+  const [chapters, setChapters] = useState('12');
+  const [lectures, setLectures] = useState('36');
+
+  const handleSubmit = () => {
+    if (!title.trim()) { alert('من فضلك أدخلي عنوان المنهج'); return; }
+    onCreate({
+      title,
+      subtitle: subtitle || stage,
+      price: parseInt(price) || 40,
+      stage: stage || 'غير محدد',
+      chapters: parseInt(chapters) || 12,
+      lectures: parseInt(lectures) || 36,
+      priceUnit: 'ج.م / الحصة',
+    });
+    alert('تم إنشاء المنهج بنجاح! ✅');
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -296,12 +380,16 @@ function CreateCourseModal({ onClose }) {
           </button>
         </div>
 
-        <form className="relative mt-6 space-y-4">
-          <Field label="عنوان المنهج" placeholder="مثلاً: العلوم — المرحلة الإعدادية" />
-          <Field label="الوصف المختصر" placeholder="ملخص جذاب للمنهج..." textarea />
+        <div className="relative mt-6 space-y-4">
+          <Field label="عنوان المنهج" placeholder="مثلاً: العلوم — المرحلة الإعدادية" value={title} onChange={setTitle} />
+          <Field label="الوصف المختصر" placeholder="ملخص جذاب للمنهج..." textarea value={subtitle} onChange={setSubtitle} />
           <div className="grid grid-cols-2 gap-3">
-            <Field label="سعر الحصة (ج.م)" placeholder="40" />
-            <Field label="المرحلة الدراسية" placeholder="إعدادي — الترم الأول" />
+            <Field label="سعر الحصة (ج.م)" placeholder="40" value={price} onChange={setPrice} />
+            <Field label="المرحلة الدراسية" placeholder="إعدادي — الترم الأول" value={stage} onChange={setStage} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="عدد الفصول" placeholder="12" value={chapters} onChange={setChapters} />
+            <Field label="عدد المحاضرات" placeholder="36" value={lectures} onChange={setLectures} />
           </div>
 
           {/* Video upload */}
@@ -328,18 +416,151 @@ function CreateCourseModal({ onClose }) {
             >
               إلغاء
             </button>
-            <button type="button" className="btn-gold px-5 py-2.5 text-xs">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="btn-gold px-5 py-2.5 text-xs"
+            >
               <Plus className="h-4 w-4" strokeWidth={2.5} />
               إنشاء المنهج
             </button>
           </div>
-        </form>
+        </div>
       </motion.div>
     </motion.div>
   );
 }
 
-function Field({ label, placeholder, textarea = false }) {
+function EditCourseModal({ course, onClose, onSave }) {
+  const [title, setTitle] = useState(course.title);
+  const [subtitle, setSubtitle] = useState(course.subtitle);
+  const [price, setPrice] = useState(String(course.price));
+  const [chapters, setChapters] = useState(String(course.chapters));
+  const [lectures, setLectures] = useState(String(course.lectures));
+
+  const handleSubmit = () => {
+    if (!title.trim()) { alert('من فضلك أدخلي عنوان المنهج'); return; }
+    onSave({
+      ...course,
+      title,
+      subtitle,
+      price: parseInt(price) || course.price,
+      chapters: parseInt(chapters) || course.chapters,
+      lectures: parseInt(lectures) || course.lectures,
+    });
+    alert('تم تعديل المنهج بنجاح! ✅');
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="glass-card gold-border relative max-h-[90vh] w-full max-w-2xl overflow-y-auto p-6 lg:p-8"
+        dir="rtl"
+      >
+        <div className="pointer-events-none absolute -left-20 -top-20 h-60 w-60 rounded-full bg-gold-400/15 blur-3xl" />
+
+        <div className="relative flex items-center justify-between">
+          <div>
+            <h3 className="font-display text-xl font-bold gold-text">
+              تعديل المنهج
+            </h3>
+            <p className="mt-1 text-xs text-white/50">
+              عدّلي بيانات المنهج واحفظي التغييرات
+            </p>
+          </div>
+          <button onClick={onClose} className="text-2xl text-white/40 hover:text-white">×</button>
+        </div>
+
+        <div className="relative mt-6 space-y-4">
+          <Field label="عنوان المنهج" value={title} onChange={setTitle} />
+          <Field label="الوصف المختصر" textarea value={subtitle} onChange={setSubtitle} />
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="سعر الحصة (ج.م)" value={price} onChange={setPrice} />
+            <Field label="عدد الفصول" value={chapters} onChange={setChapters} />
+            <Field label="عدد المحاضرات" value={lectures} onChange={setLectures} />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onClick={onClose} className="btn-ghost-gold px-5 py-2.5 text-xs">إلغاء</button>
+            <button type="button" onClick={handleSubmit} className="btn-gold px-5 py-2.5 text-xs">
+              <Edit3 className="h-4 w-4" strokeWidth={2.5} />
+              حفظ التعديلات
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function PreviewCourseModal({ course, onClose }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="glass-card gold-border relative w-full max-w-lg overflow-hidden"
+        dir="rtl"
+      >
+        <div className={`relative h-40 bg-gradient-to-br ${course.cover}`}>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent" />
+          <div className="absolute right-5 top-5 text-4xl">{course.emoji}</div>
+          <button onClick={onClose} className="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/70 hover:text-white backdrop-blur-md">
+            <X className="h-4 w-4" />
+          </button>
+          <div className="absolute bottom-4 right-5 left-5">
+            <h3 className="font-display text-xl font-bold text-white">{course.title}</h3>
+            <p className="text-xs text-white/60 mt-1">{course.subtitle}</p>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="grid grid-cols-2 gap-3 text-center">
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <p className="text-[10px] text-white/50 uppercase">الفصول</p>
+              <p className="font-display text-lg font-bold text-white">{course.chapters}</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <p className="text-[10px] text-white/50 uppercase">المحاضرات</p>
+              <p className="font-display text-lg font-bold text-white">{course.lectures}</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <p className="text-[10px] text-white/50 uppercase">الطلاب المسجلين</p>
+              <p className="font-display text-lg font-bold text-gold-200">{course.enrolled}</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <p className="text-[10px] text-white/50 uppercase">السعر</p>
+              <p className="font-display text-lg font-bold text-white">{course.price} ج.م</p>
+            </div>
+          </div>
+          <div className="flex items-center justify-between text-sm text-white/70">
+            <span>التقييم: <span className="text-gold-200 font-bold">{course.rating} ⭐</span></span>
+            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${course.status === 'published' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}`}>
+              {course.status === 'published' ? 'منشور' : 'مسودة'}
+            </span>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function Field({ label, placeholder, textarea = false, value, onChange }) {
   return (
     <div>
       <label className="mb-1.5 block text-xs font-semibold text-white/70">
@@ -349,12 +570,16 @@ function Field({ label, placeholder, textarea = false }) {
         <textarea
           rows={3}
           placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className="w-full resize-none rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
         />
       ) : (
         <input
           type="text"
           placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
           className="w-full rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
         />
       )}

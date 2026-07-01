@@ -51,12 +51,25 @@ const deviceIcons = {
 
 export default function SecurityMonitor() {
   const [filter, setFilter] = useState('all');
-  const filtered = securityLogs.filter((l) => filter === 'all' || l.severity === filter);
+  const [logs, setLogs] = useState([...securityLogs]);
+  const filtered = logs.filter((l) => filter === 'all' || l.severity === filter);
 
   const stats = {
-    high: securityLogs.filter((l) => l.severity === 'high').length,
-    medium: securityLogs.filter((l) => l.severity === 'medium').length,
-    low: securityLogs.filter((l) => l.severity === 'low').length,
+    high: logs.filter((l) => l.severity === 'high').length,
+    medium: logs.filter((l) => l.severity === 'medium').length,
+    low: logs.filter((l) => l.severity === 'low').length,
+  };
+
+  const handleBan = (logId, studentName) => {
+    if (confirm('هل تريدين حظر هذا الطالب: ' + studentName + '؟')) {
+      setLogs(logs.filter(l => l.id !== logId));
+      alert('تم حظر الطالب بنجاح وتسجيل خروجه من كل الأجهزة. ⛔');
+    }
+  };
+
+  const handleDismiss = (logId) => {
+    setLogs(logs.filter(l => l.id !== logId));
+    alert('تم تجاهل هذا التنبيه. ✅');
   };
 
   return (
@@ -155,7 +168,7 @@ export default function SecurityMonitor() {
 
           <div className="relative mt-4 space-y-3">
             {filtered.map((log, i) => (
-              <SecurityLogRow key={log.id} log={log} index={i} />
+              <SecurityLogRow key={log.id} log={log} index={i} onBan={handleBan} onDismiss={handleDismiss} />
             ))}
           </div>
         </div>
@@ -260,7 +273,7 @@ function SecurityStatCard({ title, titleEn, value, suffix = '', icon: Icon, seve
   );
 }
 
-function SecurityLogRow({ log, index }) {
+function SecurityLogRow({ log, index, onBan, onDismiss }) {
   const s = severityStyle[log.severity];
   return (
     <motion.div
@@ -319,10 +332,18 @@ function SecurityLogRow({ log, index }) {
         </div>
 
         <div className="flex shrink-0 gap-1">
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-white/60 transition-all hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300">
+          <button
+            onClick={() => onBan(log.id, log.student)}
+            title="حظر الطالب"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-white/60 transition-all hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300"
+          >
             <Ban className="h-3.5 w-3.5" />
           </button>
-          <button className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-white/60 transition-all hover:border-emerald-400/40 hover:bg-emerald-500/10 hover:text-emerald-300">
+          <button
+            onClick={() => onDismiss(log.id)}
+            title="تجاهل التنبيه"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-white/60 transition-all hover:border-emerald-400/40 hover:bg-emerald-500/10 hover:text-emerald-300"
+          >
             <CheckCircle2 className="h-3.5 w-3.5" />
           </button>
         </div>

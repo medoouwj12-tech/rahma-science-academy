@@ -14,6 +14,8 @@ import {
   Bell,
 } from 'lucide-react';
 import { sidebarNav, instructor } from '../data/mockData';
+import { useAuth } from '../lib/auth';
+import { useNavigate } from 'react-router-dom';
 
 const ICONS = {
   LayoutDashboard,
@@ -28,6 +30,16 @@ const ICONS = {
 };
 
 export default function Sidebar({ active, onSelect }) {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (confirm('هل أنتِ متأكدة من تسجيل الخروج؟')) {
+      signOut();
+      navigate('/auth');
+    }
+  };
+
   return (
     <aside
       className="fixed right-0 top-0 z-40 hidden h-screen w-[280px] flex-col border-l border-white/5 bg-black/80 backdrop-blur-2xl lg:flex"
@@ -138,7 +150,10 @@ export default function Sidebar({ active, onSelect }) {
 
       {/* Footer actions */}
       <div className="space-y-1 px-3 py-4">
-        <button className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/[0.03] hover:text-white">
+        <button
+          onClick={() => onSelect && onSelect('settings')}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/[0.03] hover:text-white"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/5 bg-white/[0.02]">
             <Bell className="h-4 w-4" strokeWidth={1.8} />
           </div>
@@ -147,7 +162,10 @@ export default function Sidebar({ active, onSelect }) {
             3
           </span>
         </button>
-        <button className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-white/60 transition-all hover:bg-rose-500/10 hover:text-rose-300">
+        <button
+          onClick={handleLogout}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-white/60 transition-all hover:bg-rose-500/10 hover:text-rose-300"
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/5 bg-white/[0.02] group-hover:border-rose-400/30">
             <LogOut className="h-4 w-4" strokeWidth={1.8} />
           </div>

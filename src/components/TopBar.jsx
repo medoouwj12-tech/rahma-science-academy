@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Search, Bell, MessageSquare, Plus, Menu } from 'lucide-react';
 import { instructor } from '../data/mockData';
 
-export default function TopBar({ onMenuClick }) {
+export default function TopBar({ onMenuClick, onNewCourse }) {
   return (
     <header
       className="sticky top-0 z-30 border-b border-white/5 bg-black/60 backdrop-blur-2xl"
@@ -48,6 +48,7 @@ export default function TopBar({ onMenuClick }) {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            onClick={onNewCourse}
             className="btn-gold hidden gap-2 px-4 py-2.5 text-xs sm:inline-flex"
           >
             <Plus className="h-4 w-4" strokeWidth={2.5} />

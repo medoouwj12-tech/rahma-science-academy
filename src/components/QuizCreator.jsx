@@ -11,12 +11,15 @@ import {
   Award,
   Trash2,
   Eye,
+  X,
 } from 'lucide-react';
 import { quizzes } from '../data/mockData';
 import CountUp from './CountUp';
 
 export default function QuizCreator() {
+  const [quizList, setQuizList] = useState([...quizzes]);
   const [showBuilder, setShowBuilder] = useState(false);
+  const [previewQuiz, setPreviewQuiz] = useState(null);
   const [questions, setQuestions] = useState([
     {
       id: 1,
@@ -31,6 +34,28 @@ export default function QuizCreator() {
       ],
     },
   ]);
+
+  const handleDeleteQuiz = (quizId) => {
+    if (confirm('هل أنتِ متأكدة من حذف هذا الاختبار؟')) {
+      setQuizList(quizList.filter(q => q.id !== quizId));
+    }
+  };
+
+  const handleSaveQuiz = () => {
+    const newQuiz = {
+      id: 'q' + Date.now(),
+      title: 'اختبار جديد — ' + questions.length + ' أسئلة',
+      course: 'العلوم — إعدادي',
+      questions: questions.length,
+      duration: 30,
+      attempts: 0,
+      avgScore: 0,
+      status: 'scheduled',
+    };
+    setQuizList([...quizList, newQuiz]);
+    setShowBuilder(false);
+    alert('تم حفظ ونشر الاختبار بنجاح! ✅');
+  };
 
   return (
     <motion.section
@@ -65,8 +90,14 @@ export default function QuizCreator() {
 
       {/* Quiz Grid */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {quizzes.map((q, i) => (
-          <QuizCard key={q.id} quiz={q} index={i} />
+        {quizList.map((q, i) => (
+          <QuizCard
+            key={q.id}
+            quiz={q}
+            index={i}
+            onPreview={() => setPreviewQuiz(q)}
+            onDelete={() => handleDeleteQuiz(q.id)}
+          />
         ))}
       </div>
 
@@ -77,14 +108,22 @@ export default function QuizCreator() {
             questions={questions}
             setQuestions={setQuestions}
             onClose={() => setShowBuilder(false)}
+            onSave={handleSaveQuiz}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {previewQuiz && (
+          <PreviewQuizModal quiz={previewQuiz} onClose={() => setPreviewQuiz(null)} />
         )}
       </AnimatePresence>
     </motion.section>
   );
 }
 
-function QuizCard({ quiz, index }) {
+function QuizCard({ quiz, index, onPreview, onDelete }) {
   const active = quiz.status === 'active';
   return (
     <motion.article
@@ -117,9 +156,20 @@ function QuizCard({ quiz, index }) {
           </div>
           <h4 className="mt-2 text-base font-bold text-white">{quiz.title}</h4>
         </div>
-        <button className="btn-ghost-gold h-8 w-8 p-0">
-          <Eye className="h-3.5 w-3.5" />
-        </button>
+        <div className="flex gap-1">
+          <button
+            onClick={onPreview}
+            className="btn-ghost-gold h-8 w-8 p-0"
+          >
+            <Eye className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={onDelete}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-white/60 transition-all hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -190,7 +240,67 @@ function StatBox({ label, value, suffix = '', icon: Icon, color }) {
   );
 }
 
-function QuizBuilder({ questions, setQuestions, onClose }) {
+function PreviewQuizModal({ quiz, onClose }) {
+  const active = quiz.status === 'active';
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className="glass-card gold-border relative w-full max-w-md p-6"
+        dir="rtl"
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-display text-lg font-bold gold-text">معاينة الاختبار</h3>
+          <button onClick={onClose} className="text-white/40 hover:text-white"><X className="h-5 w-5" /></button>
+        </div>
+        <div className="space-y-3">
+          <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+            <p className="text-[10px] text-white/50 uppercase mb-1">عنوان الاختبار</p>
+            <p className="text-sm font-bold text-white">{quiz.title}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">المنهج</p>
+              <p className="text-sm font-bold text-gold-200 mt-1">{quiz.course}</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">الحالة</p>
+              <p className={`text-sm font-bold mt-1 ${active ? 'text-emerald-300' : 'text-amber-300'}`}>
+                {active ? 'نشط' : 'مجدول'}
+              </p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">عدد الأسئلة</p>
+              <p className="text-lg font-bold text-white mt-1">{quiz.questions}</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">المدة</p>
+              <p className="text-lg font-bold text-white mt-1">{quiz.duration} دقيقة</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">المتوسط</p>
+              <p className="text-lg font-bold text-emerald-300 mt-1">{quiz.avgScore}%</p>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center">
+              <p className="text-[10px] text-white/50">المحاولات</p>
+              <p className="text-lg font-bold text-gold-200 mt-1">{quiz.attempts}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function QuizBuilder({ questions, setQuestions, onClose, onSave }) {
   const [type, setType] = useState('mcq');
 
   const addQuestion = () => {
@@ -210,6 +320,38 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
             : [],
       },
     ]);
+  };
+
+  const deleteQuestion = (qId) => {
+    if (questions.length <= 1) {
+      alert('لا يمكن حذف السؤال الأخير. يجب أن يحتوي الاختبار على سؤال واحد على الأقل.');
+      return;
+    }
+    setQuestions(questions.filter(q => q.id !== qId));
+  };
+
+  const updateQuestionText = (qId, text) => {
+    setQuestions(questions.map(q => q.id === qId ? { ...q, text } : q));
+  };
+
+  const updateQuestionMarks = (qId, marks) => {
+    setQuestions(questions.map(q => q.id === qId ? { ...q, marks: parseInt(marks) || 0 } : q));
+  };
+
+  const updateOptionText = (qId, optId, text) => {
+    setQuestions(questions.map(q =>
+      q.id === qId
+        ? { ...q, options: q.options.map(o => o.id === optId ? { ...o, text } : o) }
+        : q
+    ));
+  };
+
+  const toggleCorrect = (qId, optId) => {
+    setQuestions(questions.map(q =>
+      q.id === qId
+        ? { ...q, options: q.options.map(o => ({ ...o, correct: o.id === optId })) }
+        : q
+    ));
   };
 
   return (
@@ -268,7 +410,8 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
               عدد الأسئلة
             </label>
             <input
-              defaultValue={questions.length}
+              value={questions.length}
+              readOnly
               type="number"
               className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none focus:border-gold-400/40"
             />
@@ -329,15 +472,17 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <input
-                    defaultValue={q.text}
+                    value={q.text}
+                    onChange={(e) => updateQuestionText(q.id, e.target.value)}
                     className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none focus:border-gold-400/40"
                   />
                   {q.type === 'mcq' && (
                     <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {q.options.map((opt, oi) => (
+                      {q.options.map((opt) => (
                         <div
                           key={opt.id}
-                          className="group flex items-center gap-2 rounded-lg border border-white/5 bg-black/20 p-2"
+                          className="group flex items-center gap-2 rounded-lg border border-white/5 bg-black/20 p-2 cursor-pointer"
+                          onClick={() => toggleCorrect(q.id, opt.id)}
                         >
                           <span
                             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
@@ -353,7 +498,9 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
                             )}
                           </span>
                           <input
-                            defaultValue={opt.text}
+                            value={opt.text}
+                            onChange={(e) => { e.stopPropagation(); updateOptionText(q.id, opt.id, e.target.value); }}
+                            onClick={(e) => e.stopPropagation()}
                             className="flex-1 bg-transparent text-sm text-white outline-none"
                           />
                         </div>
@@ -363,12 +510,16 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   <input
-                    defaultValue={q.marks}
+                    value={q.marks}
+                    onChange={(e) => updateQuestionMarks(q.id, e.target.value)}
                     type="number"
                     className="w-14 rounded-lg border border-white/10 bg-black/30 px-2 py-1.5 text-center text-xs text-white outline-none focus:border-gold-400/40"
                   />
                   <span className="text-[10px] text-white/40">درجة</span>
-                  <button className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-rose-500/10 hover:text-rose-400">
+                  <button
+                    onClick={() => deleteQuestion(q.id)}
+                    className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-rose-500/10 hover:text-rose-400"
+                  >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
@@ -389,7 +540,10 @@ function QuizBuilder({ questions, setQuestions, onClose }) {
           <button onClick={onClose} className="btn-ghost-gold px-5 py-2.5 text-xs">
             إلغاء
           </button>
-          <button className="btn-gold px-5 py-2.5 text-xs">
+          <button
+            onClick={onSave}
+            className="btn-gold px-5 py-2.5 text-xs"
+          >
             <Sparkles className="h-4 w-4" strokeWidth={2.5} />
             حفظ ونشر الاختبار
           </button>

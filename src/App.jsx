@@ -156,7 +156,7 @@ function InstructorShell() {
       </AnimatePresence>
 
       <div className="lg:mr-[280px]">
-        <TopBar onMenuClick={() => setMobileOpen(true)} />
+        <TopBar onMenuClick={() => setMobileOpen(true)} onNewCourse={() => setActiveTab('courses')} />
         <main className="px-4 py-5 lg:px-8 lg:py-7">
           <InstructorDashboard activeTab={activeTab} setActiveTab={setActiveTab} />
         </main>
