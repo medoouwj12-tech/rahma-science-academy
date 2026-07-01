@@ -709,7 +709,7 @@ function ResultScreen({ score, maxScore, percent, passed, onRetake }) {
                   cy="50"
                   r="42"
                   fill="none"
-                  stroke="rgba(255,255,255,0.05)"
+                  stroke="rgba(15,23,42,0.06)"
                   strokeWidth="8"
                 />
                 <motion.circle
@@ -727,14 +727,14 @@ function ResultScreen({ score, maxScore, percent, passed, onRetake }) {
                   }}
                   transition={{ duration: 1.5, delay: 0.3 }}
                   style={{
-                    filter: 'drop-shadow(0 0 8px rgba(212,175,55,0.5))',
+                    filter: 'drop-shadow(0 0 8px rgba(37,99,235,0.4))',
                   }}
                 />
                 <defs>
                   <linearGradient id="result-grad">
-                    <stop offset="0%" stopColor="#F3E5AB" />
-                    <stop offset="50%" stopColor="#D4AF37" />
-                    <stop offset="100%" stopColor="#B8941F" />
+                    <stop offset="0%" stopColor="#60A5FA" />
+                    <stop offset="50%" stopColor="#3B82F6" />
+                    <stop offset="100%" stopColor="#2563EB" />
                   </linearGradient>
                 </defs>
               </svg>

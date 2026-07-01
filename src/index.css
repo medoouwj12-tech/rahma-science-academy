@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-  --gold: #d4af37;
-  --gold-light: #f3e5ab;
-  --gold-dark: #b8941f;
+  color-scheme: light;
+  --gold: #3b82f6;
+  --gold-light: #60a5fa;
+  --gold-dark: #2563eb;
 }
 
 * {
@@ -16,8 +16,8 @@
 
 html,
 body {
-  background: #000;
-  color: #fff;
+  background: #ffffff;
+  color: #0f172a;
   font-family: 'Cairo', 'Inter', system-ui, sans-serif;
   font-feature-settings: 'ss01', 'cv01';
   scroll-behavior: smooth;
@@ -25,9 +25,9 @@ body {
 
 body {
   background-image:
-    radial-gradient(circle at 15% 10%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
-    radial-gradient(circle at 85% 90%, rgba(212, 175, 55, 0.05) 0%, transparent 45%),
-    linear-gradient(180deg, #000 0%, #050505 100%);
+    radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(59, 130, 246, 0.04) 0%, transparent 45%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   background-attachment: fixed;
   min-height: 100vh;
 }
@@ -38,31 +38,37 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: #f8fafc;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #b8941f, #d4af37, #b8941f);
+  background: linear-gradient(180deg, #2563eb, #3b82f6, #2563eb);
   border-radius: 999px;
-  border: 2px solid #000;
+  border: 2px solid #f8fafc;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #d4af37, #f3e5ab, #d4af37);
+  background: linear-gradient(180deg, #1d4ed8, #2563eb, #1d4ed8);
 }
 
 /* ===== Selection ===== */
 ::selection {
-  background: rgba(212, 175, 55, 0.35);
-  color: #f3e5ab;
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e3a8a;
 }
 
 /* ===== Reusable utility classes ===== */
 @layer components {
   .glass-card {
-    @apply relative rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-card;
+    position: relative;
+    border-radius: 1rem;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
     background-image: linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.03) 0%,
-      rgba(255, 255, 255, 0) 60%
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.7) 60%
     );
   }
 
@@ -70,16 +76,18 @@ body {
     @apply transition-all duration-500;
   }
   .glass-card-hover:hover {
-    @apply border-gold-400/40 -translate-y-0.5 shadow-gold-glow;
+    border-color: rgba(59, 130, 246, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -8px rgba(37, 99, 235, 0.12), 0 4px 12px -2px rgba(37, 99, 235, 0.04);
     background-image: linear-gradient(
       145deg,
-      rgba(212, 175, 55, 0.06) 0%,
-      rgba(212, 175, 55, 0.01) 60%
+      rgba(59, 130, 246, 0.04) 0%,
+      rgba(59, 130, 246, 0.01) 60%
     );
   }
 
   .gold-text {
-    background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #b8941f 100%);
+    background: linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1d4ed8 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -89,11 +97,11 @@ body {
   .gold-shine-text {
     background: linear-gradient(
       110deg,
-      #b8941f 0%,
-      #d4af37 25%,
-      #f3e5ab 50%,
-      #d4af37 75%,
-      #b8941f 100%
+      #1d4ed8 0%,
+      #2563eb 25%,
+      #60a5fa 50%,
+      #2563eb 75%,
+      #1d4ed8 100%
     );
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -112,7 +120,7 @@ body {
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(243, 229, 171, 0.5), rgba(212, 175, 55, 0.2) 50%, rgba(184, 148, 31, 0.4));
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.5), rgba(37, 99, 235, 0.2) 50%, rgba(29, 78, 216, 0.4));
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -122,31 +130,31 @@ body {
   }
 
   .btn-gold {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-black transition-all duration-300;
-    background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #b8941f 100%);
+    @apply relative inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white transition-all duration-300;
+    background: linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1d4ed8 100%);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      0 4px 24px -4px rgba(212, 175, 55, 0.4);
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 4px 18px -4px rgba(37, 99, 235, 0.35);
   }
   .btn-gold:hover {
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      0 8px 32px -4px rgba(212, 175, 55, 0.55);
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      0 8px 24px -4px rgba(37, 99, 235, 0.45);
   }
   .btn-gold:active {
     transform: translateY(0);
   }
 
   .btn-ghost-gold {
-    @apply relative inline-flex items-center justify-center gap-2 rounded-xl border border-gold-400/30 bg-white/[0.02] px-6 py-3 text-sm font-semibold text-gold-100 backdrop-blur-xl transition-all duration-300;
+    @apply relative inline-flex items-center justify-center gap-2 rounded-xl border border-blue-500/20 bg-blue-50/50 px-6 py-3 text-sm font-semibold text-blue-700 backdrop-blur-xl transition-all duration-300;
   }
   .btn-ghost-gold:hover {
-    @apply border-gold-400/60 bg-gold-400/5 text-gold-50 shadow-gold-glow;
+    @apply border-blue-500/40 bg-blue-500/10 text-blue-800 shadow-sm;
   }
 
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-gold-400/20 bg-gold-400/[0.06] px-3 py-1 text-xs font-medium text-gold-100;
+    @apply inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/[0.06] px-3 py-1 text-xs font-medium text-blue-700;
   }
 
   .divider-gold {
@@ -154,7 +162,7 @@ body {
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(212, 175, 55, 0.5) 50%,
+      rgba(37, 99, 235, 0.2) 50%,
       transparent 100%
     );
   }
@@ -162,21 +170,21 @@ body {
 
 /* Premium focus ring */
 *:focus-visible {
-  outline: 2px solid rgba(212, 175, 55, 0.6);
+  outline: 2px solid rgba(37, 99, 235, 0.6);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* SVG dot pattern overlay */
 .dot-pattern {
-  background-image: radial-gradient(rgba(212, 175, 55, 0.12) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 /* Subtle grid lines */
 .grid-lines {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(15, 23, 42, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.015) 1px, transparent 1px);
   background-size: 48px 48px;
 }
