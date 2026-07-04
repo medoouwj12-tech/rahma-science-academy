@@ -169,7 +169,8 @@ BEGIN
     INSERT INTO profiles (id, email, full_name, role, phone) VALUES
     ('ins_rahma', 'rahma@rahma-khaled.com', 'الأستاذة رحمة خالد', 'instructor', '01003330460');
     INSERT INTO auth_credentials (user_id, salt, password_hash) VALUES
-    ('ins_rahma', 'a1b2c3d4e5f6g7h8', 'a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2a3b4c5d6e7f8g9h0');
+    -- sha256('rahma123' + 'a1b2c3d4e5f6g7h8')
+    ('ins_rahma', 'a1b2c3d4e5f6g7h8', 'e20daa435cefaee6c5e3d83eed119c0552445b227921e5a9a0daf8ccefeef239');
   END IF;
 
   -- الكورسات
