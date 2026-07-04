@@ -15,14 +15,51 @@ import {
   CheckCircle2,
   Github,
   Chrome,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react';
+import { useAuth } from '../lib/auth';
 
 export default function AuthPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
   const initialMode = params.get('signup') ? 'signup' : 'signin';
-  const [mode, setMode] = useState(initialMode); // 'signin' | 'signup'
-  const [role, setRole] = useState('student'); // 'student' | 'instructor'
+  const [mode, setMode] = useState(initialMode);
+  const [role, setRole] = useState('student');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Form fields
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      if (mode === 'signup') {
+        if (!fullName || !email || !password) {
+          throw new Error('الرجاء ملء جميع الحقول المطلوبة');
+        }
+        await signUp({ email, password, full_name: fullName, role, stage: '' });
+      } else {
+        if (!email || !password) {
+          throw new Error('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
+        }
+        await signIn(email, password);
+      }
+      navigate(role === 'instructor' ? '/instructor' : '/student');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div
@@ -140,6 +177,17 @@ export default function AuthPage() {
             <div className="h-px flex-1 bg-white/10" />
           </div>
 
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-300"
+            >
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              {error}
+            </motion.div>
+          )}
+
           <AnimatePresence mode="wait">
             <motion.form
               key={mode}
@@ -147,35 +195,75 @@ export default function AuthPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.3 }}
-              onSubmit={(e) => {
-                e.preventDefault();
-                navigate(role === 'instructor' ? '/instructor' : '/student');
-              }}
+              onSubmit={handleSubmit}
               className="space-y-3"
             >
               {mode === 'signup' && (
-                <Field
-                  icon={User}
-                  label="الاسم الكامل"
-                  type="text"
-                  placeholder="مثال: فاطمة الزهراء"
-                />
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold text-white/70">الاسم الكامل</label>
+                  <div className="relative">
+                    <User className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="مثال: فاطمة الزهراء"
+                      required={mode === 'signup'}
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-3 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
+                    />
+                  </div>
+                </div>
               )}
-              <Field
-                icon={Mail}
-                label="البريد الإلكتروني"
-                type="email"
-                placeholder="example@mail.com"
-              />
+              <div>
+                <label className="mb-1.5 block text-[11px] font-semibold text-white/70">البريد الإلكتروني</label>
+                <div className="relative">
+                  <Mail className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="example@mail.com"
+                    required
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-3 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
+                  />
+                </div>
+              </div>
               {mode === 'signup' && (
-                <Field
-                  icon={Phone}
-                  label="رقم الهاتف"
-                  type="tel"
-                  placeholder="+20 100 ••• 8888"
-                />
+                <div>
+                  <label className="mb-1.5 block text-[11px] font-semibold text-white/70">رقم الهاتف</label>
+                  <div className="relative">
+                    <Phone className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+20 100 ••• 8888"
+                      className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-3 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
+                    />
+                  </div>
+                </div>
               )}
-              <PasswordField />
+              <div>
+                <label className="mb-1.5 block text-[11px] font-semibold text-white/70">كلمة المرور</label>
+                <div className="relative">
+                  <Lock className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
 
               {mode === 'signup' ? (
                 <label className="flex items-start gap-2 pt-1 text-[11px] text-white/60">
@@ -216,10 +304,15 @@ export default function AuthPage() {
 
               <button
                 type="submit"
-                className="btn-gold mt-2 w-full justify-center py-3 text-sm"
+                disabled={loading}
+                className="btn-gold mt-2 w-full justify-center py-3 text-sm disabled:opacity-60"
               >
-                <Crown className="h-4 w-4" strokeWidth={2.5} />
-                {mode === 'signup' ? 'أنشئي الحساب' : 'تسجيل الدخول'}
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Crown className="h-4 w-4" strokeWidth={2.5} />
+                )}
+                {loading ? 'جاري...' : mode === 'signup' ? 'أنشئي الحساب' : 'تسجيل الدخول'}
               </button>
             </motion.form>
           </AnimatePresence>
@@ -242,54 +335,6 @@ export default function AuthPage() {
           </div>
         </div>
       </motion.div>
-    </div>
-  );
-}
-
-function Field({ icon: Icon, label, type = 'text', placeholder }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-[11px] font-semibold text-white/70">
-        {label}
-      </label>
-      <div className="relative">
-        <Icon className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        <input
-          type={type}
-          placeholder={placeholder}
-          className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-3 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
-        />
-      </div>
-    </div>
-  );
-}
-
-function PasswordField() {
-  const [show, setShow] = useState(false);
-  return (
-    <div>
-      <label className="mb-1.5 block text-[11px] font-semibold text-white/70">
-        كلمة المرور
-      </label>
-      <div className="relative">
-        <Lock className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-        <input
-          type={show ? 'text' : 'password'}
-          placeholder="••••••••"
-          className="w-full rounded-xl border border-white/10 bg-white/[0.02] py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-white/30 outline-none transition-all focus:border-gold-400/40 focus:bg-white/[0.04] focus:shadow-gold-glow"
-        />
-        <button
-          type="button"
-          onClick={() => setShow((v) => !v)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
-        >
-          {show ? (
-            <EyeOff className="h-4 w-4" />
-          ) : (
-            <Eye className="h-4 w-4" />
-          )}
-        </button>
-      </div>
     </div>
   );
 }

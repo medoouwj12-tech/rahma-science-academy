@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
@@ -20,13 +20,26 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
-import { courses } from '../data/mockData';
+import { courses as mockCourses } from '../data/mockData';
+import { coursesApi } from '../lib/api';
 
 export default function CheckoutPage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const course = courses.find((c) => c.id === parseInt(courseId)) || courses[0];
+  const [course, setCourse] = useState(null);
   const [method, setMethod] = useState('card');
+  const [checkoutLoading, setCheckoutLoading] = useState(true);
+
+  useEffect(() => {
+    coursesApi.get(courseId).then(res => {
+      if (res?.data) setCourse(res.data);
+    }).catch(() => {
+      setCourse(mockCourses.find((c) => c.id === parseInt(courseId)) || mockCourses[0]);
+    }).finally(() => setCheckoutLoading(false));
+  }, [courseId]);
+
+  if (checkoutLoading) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" /></div>;
+  if (!course) return <div className="flex min-h-screen items-center justify-center text-white/60">الكورس غير موجود</div>;
   const [coupon, setCoupon] = useState('');
   const [applied, setApplied] = useState(false);
   const [processing, setProcessing] = useState(false);

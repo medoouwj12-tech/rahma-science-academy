@@ -16,8 +16,10 @@ import {
 } from 'lucide-react';
 import { courses } from '../data/mockData';
 import CountUp from './CountUp';
+import { useToast } from './Toast';
 
 export default function CourseManager() {
+  const { success, error } = useToast();
   const [courseList, setCourseList] = useState([...courses]);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
@@ -125,7 +127,7 @@ export default function CourseManager() {
         </div>
 
         <button
-          onClick={() => alert('جاري فتح مدير رفع الفيديوهات...')}
+          onClick={() => success('جاري فتح مدير رفع الفيديوهات...')}
           className="btn-ghost-gold h-9 px-3 text-xs"
         >
           <Upload className="h-3.5 w-3.5" />
@@ -279,7 +281,7 @@ function CourseCard({ course, index, onEdit, onDelete, onPreview }) {
                 className="absolute left-0 top-full z-10 mt-1 min-w-[140px] rounded-lg border border-white/10 bg-obsidian-light p-1 shadow-xl"
               >
                 <button
-                  onClick={() => { setMenuOpen(false); alert('تمت إضافة محاضرة جديدة بنجاح!'); }}
+                  onClick={() => { setMenuOpen(false); success('تمت إضافة محاضرة جديدة'); }}
                   className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-white/80 hover:bg-white/5"
                 >
                   <Upload className="h-3.5 w-3.5" /> إضافة محاضرة
@@ -325,6 +327,7 @@ function Mini({ icon: Icon, label, value, gold = false }) {
 }
 
 function CreateCourseModal({ onClose, onCreate }) {
+  const { success, error } = useToast();
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [price, setPrice] = useState('40');
@@ -333,7 +336,7 @@ function CreateCourseModal({ onClose, onCreate }) {
   const [lectures, setLectures] = useState('36');
 
   const handleSubmit = () => {
-    if (!title.trim()) { alert('من فضلك أدخلي عنوان المنهج'); return; }
+    if (!title.trim()) { error('من فضلك أدخلي عنوان المنهج'); return; }
     onCreate({
       title,
       subtitle: subtitle || stage,
@@ -343,7 +346,7 @@ function CreateCourseModal({ onClose, onCreate }) {
       lectures: parseInt(lectures) || 36,
       priceUnit: 'ج.م / الحصة',
     });
-    alert('تم إنشاء المنهج بنجاح! ✅');
+    success('تم إنشاء المنهج بنجاح');
   };
 
   return (
@@ -432,6 +435,7 @@ function CreateCourseModal({ onClose, onCreate }) {
 }
 
 function EditCourseModal({ course, onClose, onSave }) {
+  const { success, error } = useToast();
   const [title, setTitle] = useState(course.title);
   const [subtitle, setSubtitle] = useState(course.subtitle);
   const [price, setPrice] = useState(String(course.price));
@@ -439,7 +443,7 @@ function EditCourseModal({ course, onClose, onSave }) {
   const [lectures, setLectures] = useState(String(course.lectures));
 
   const handleSubmit = () => {
-    if (!title.trim()) { alert('من فضلك أدخلي عنوان المنهج'); return; }
+    if (!title.trim()) { error('من فضلك أدخلي عنوان المنهج'); return; }
     onSave({
       ...course,
       title,
@@ -448,7 +452,7 @@ function EditCourseModal({ course, onClose, onSave }) {
       chapters: parseInt(chapters) || course.chapters,
       lectures: parseInt(lectures) || course.lectures,
     });
-    alert('تم تعديل المنهج بنجاح! ✅');
+    success('تم تعديل المنهج بنجاح');
   };
 
   return (

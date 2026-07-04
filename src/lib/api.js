@@ -1,4 +1,3 @@
-// مساعد لإجراء fetch — يضيف base URL مرة واحدة
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export async function api(path, options = {}) {
@@ -15,7 +14,13 @@ export async function api(path, options = {}) {
 
 export const coursesApi = {
   list: (stage) => api(`/courses${stage ? `?stage=${stage}` : ''}`),
+  get: (id) => api(`/courses${id ? `?id=${id}` : ''}`),
   create: (data) => api('/courses', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+export const lessonsApi = {
+  list: (courseId) => api(`/lessons?course_id=${courseId}`),
+  create: (data) => api('/lessons', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 export const enrollmentsApi = {
@@ -36,4 +41,23 @@ export const paymentsApi = {
 
 export const statsApi = {
   get: () => api('/stats'),
+};
+
+export const quizzesApi = {
+  list: (courseId) => api(`/quizzes${courseId ? `?course_id=${courseId}` : ''}`),
+  create: (data) => api('/quizzes', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+export const certificatesApi = {
+  list: (studentId) => api(`/certificates?student_id=${studentId}`),
+  issue: (data) => api('/certificates', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+export const liveSessionsApi = {
+  list: () => api('/live'),
+  create: (data) => api('/live', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+export const checkoutApi = {
+  create: (data) => api('/checkout', { method: 'POST', body: JSON.stringify(data) }),
 };

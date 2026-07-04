@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Crown,
   Sparkles,
@@ -19,6 +19,7 @@ import {
   Star
 } from 'lucide-react';
 import { statsCards, recentStudents } from '../data/mockData';
+import { statsApi } from '../lib/api';
 import StatsCard from '../components/StatsCard';
 import RevenueChart from '../components/RevenueChart';
 import CourseManager from '../components/CourseManager';
@@ -27,12 +28,14 @@ import SecurityMonitor from '../components/SecurityMonitor';
 import CountUp from '../components/CountUp';
 import LiveSessions from './LiveSessions';
 import Certificates from './Certificates';
+import { useToast } from '../components/Toast';
 
 /**
  * InstructorDashboard — the main page.
  * Supports activeTab prop to switch between dashboard sections.
  */
 export default function InstructorDashboard({ activeTab = 'overview', setActiveTab }) {
+  const { success, error } = useToast();
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
@@ -474,16 +477,16 @@ function SettingsPanel() {
 
   const handleProfileSave = (e) => {
     e.preventDefault();
-    alert('تم حفظ بيانات الملف الشخصي بنجاح!');
+    success('تم حفظ بيانات الملف الشخصي بنجاح');
   };
 
   const handlePasswordSave = (e) => {
     e.preventDefault();
     if (password.new !== password.confirm) {
-      alert('كلمة المرور الجديدة غير متطابقة!');
+      error('كلمة المرور الجديدة غير متطابقة');
       return;
     }
-    alert('تم تعديل كلمة المرور بنجاح!');
+    success('تم تعديل كلمة المرور بنجاح');
     setPassword({ current: '', new: '', confirm: '' });
   };
 

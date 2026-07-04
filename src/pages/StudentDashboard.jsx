@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import {
   BookOpen,
   PlayCircle,
@@ -15,6 +16,8 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import CountUp from '../components/CountUp';
+import { useAuth } from '../lib/auth';
+import { enrollmentsApi } from '../lib/api';
 import { courses } from '../data/mockData';
 
 const enrolledCourses = [
@@ -87,6 +90,17 @@ const upcoming = [
 ];
 
 export default function StudentDashboard() {
+  const { user } = useAuth();
+  const [realEnrollments, setRealEnrollments] = useState(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      enrollmentsApi.list(user.id).then(res => {
+        if (res?.data?.length) setRealEnrollments(res.data);
+      }).catch(() => {});
+    }
+  }, [user]);
+
   return (
     <div className="min-h-screen px-4 py-5 lg:px-8 lg:py-7" dir="rtl">
       {/* Welcome */}

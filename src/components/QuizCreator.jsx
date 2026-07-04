@@ -15,8 +15,10 @@ import {
 } from 'lucide-react';
 import { quizzes } from '../data/mockData';
 import CountUp from './CountUp';
+import { useToast } from './Toast';
 
 export default function QuizCreator() {
+  const { success, error } = useToast();
   const [quizList, setQuizList] = useState([...quizzes]);
   const [showBuilder, setShowBuilder] = useState(false);
   const [previewQuiz, setPreviewQuiz] = useState(null);
@@ -36,9 +38,8 @@ export default function QuizCreator() {
   ]);
 
   const handleDeleteQuiz = (quizId) => {
-    if (confirm('هل أنتِ متأكدة من حذف هذا الاختبار؟')) {
-      setQuizList(quizList.filter(q => q.id !== quizId));
-    }
+    setQuizList(quizList.filter(q => q.id !== quizId));
+    success('تم حذف الاختبار');
   };
 
   const handleSaveQuiz = () => {
@@ -54,7 +55,7 @@ export default function QuizCreator() {
     };
     setQuizList([...quizList, newQuiz]);
     setShowBuilder(false);
-    alert('تم حفظ ونشر الاختبار بنجاح! ✅');
+    success('تم حفظ ونشر الاختبار بنجاح');
   };
 
   return (
@@ -324,7 +325,7 @@ function QuizBuilder({ questions, setQuestions, onClose, onSave }) {
 
   const deleteQuestion = (qId) => {
     if (questions.length <= 1) {
-      alert('لا يمكن حذف السؤال الأخير. يجب أن يحتوي الاختبار على سؤال واحد على الأقل.');
+      error('لا يمكن حذف السؤال الأخير');
       return;
     }
     setQuestions(questions.filter(q => q.id !== qId));

@@ -17,8 +17,7 @@ function verifyHmac(body, hmac) {
     'source_data_pan', 'source_data_sub_type', 'source_data_type', 'success',
   ];
   const concat = ordered.map(k => (body[k] ?? '').toString()).join('');
-  // eslint-disable-next-line no-undef
-  const crypto = require('crypto');
+  const crypto = await import('node:crypto').then(m => m.default);
   const computed = crypto.createHmac('sha256', process.env.PAYMOB_HMAC_SECRET || '')
     .update(concat).digest('hex');
   return computed === hmac;

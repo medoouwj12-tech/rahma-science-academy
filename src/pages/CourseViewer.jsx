@@ -19,7 +19,8 @@ import {
   Cast,
   Shield,
 } from 'lucide-react';
-import { courses } from '../data/mockData';
+import { courses as mockCourses } from '../data/mockData';
+import { coursesApi, lessonsApi } from '../lib/api';
 import Watermark from '../components/Watermark';
 
 const playlist = [
@@ -37,7 +38,21 @@ const playlist = [
 
 export default function CourseViewer() {
   const { courseId } = useParams();
-  const course = courses.find((c) => c.id === parseInt(courseId)) || courses[0];
+  const [course, setCourse] = useState(null);
+  const [realLessons, setRealLessons] = useState(null);
+
+  useEffect(() => {
+    coursesApi.get(courseId).then(res => {
+      if (res?.data) setCourse(res.data);
+    }).catch(() => {
+      setCourse(mockCourses.find((c) => c.id === parseInt(courseId)) || mockCourses[0]);
+    });
+    lessonsApi.list(courseId).then(res => {
+      if (res?.data?.length) setRealLessons(res.data);
+    }).catch(() => {});
+  }, [courseId]);
+
+  if (!course) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-400 border-t-transparent" /></div>;
 
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);

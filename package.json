@@ -1,6 +1,7 @@
 {
   "name": "rahma-science-academy",
   "version": "1.0.0",
+  "type": "module",
   "description": "منصة رحمة - LMS لمادة العلوم (ابتدائي/إعدادي/ثانوي)",
   "scripts": {
     "dev": "vite",

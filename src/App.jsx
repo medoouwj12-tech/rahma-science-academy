@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   GraduationCap,
+  ShieldAlert,
 } from 'lucide-react';
 import InstructorDashboard from './pages/InstructorDashboard';
 import LandingPage from './pages/LandingPage';
@@ -30,8 +31,30 @@ import CheckoutPage from './pages/CheckoutPage';
 import LiveSessions from './pages/LiveSessions';
 import Certificates from './pages/Certificates';
 import ProfilePage from './pages/ProfilePage';
-import { AuthProvider } from './lib/auth';
+import Quizzes from './pages/Quizzes';
+import { AuthProvider, useAuth } from './lib/auth';
 import WhatsAppButton from './components/WhatsAppButton';
+import { ToastProvider } from './components/Toast';
+
+function ProtectedRoute({ children, requiredRole }) {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+  if (requiredRole && user?.role !== requiredRole) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black p-4" dir="rtl">
+        <div className="glass-card gold-border max-w-md p-8 text-center">
+          <ShieldAlert className="mx-auto mb-4 h-16 w-16 text-rose-400" />
+          <h1 className="font-display text-2xl font-bold text-white">غير مصرح بالدخول</h1>
+          <p className="mt-2 text-sm text-white/60">هذه الصفحة مخصصة لـ {requiredRole === 'instructor' ? 'الأستاذة' : 'الطلاب'} فقط.</p>
+          <Link to="/" className="btn-gold mt-6 inline-flex px-6 py-3 text-sm">العودة للرئيسية</Link>
+        </div>
+      </div>
+    );
+  }
+  return children;
+}
 
 const studentNav = [
   { id: '/student', label: 'مناهجي', icon: BookOpen },
@@ -44,20 +67,22 @@ const studentNav = [
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/checkout/:courseId" element={<CheckoutPage />} />
-          <Route
-            path="/instructor/*"
-            element={<InstructorShell />}
-          />
-          <Route path="/student/*" element={<StudentShell />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        <WhatsAppButton />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/checkout/:courseId" element={<CheckoutPage />} />
+            <Route
+              path="/instructor/*"
+              element={<ProtectedRoute requiredRole="instructor"><InstructorShell /></ProtectedRoute>}
+            />
+            <Route path="/student/*" element={<ProtectedRoute requiredRole="student"><StudentShell /></ProtectedRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <WhatsAppButton />
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }
@@ -319,7 +344,7 @@ function StudentShell() {
           <Route index element={<StudentDashboard />} />
           <Route path="course/:courseId" element={<CourseViewer />} />
           <Route path="quiz/:quizId" element={<QuizInterface />} />
-          <Route path="quizzes" element={<StudentDashboard />} />
+          <Route path="quizzes" element={<Quizzes />} />
           <Route path="live" element={<LiveSessions />} />
           <Route path="certificates" element={<Certificates />} />
           <Route path="profile" element={<ProfilePage />} />

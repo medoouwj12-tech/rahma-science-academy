@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { securityLogs, recentStudents } from '../data/mockData';
 import CountUp from './CountUp';
+import { useToast } from './Toast';
 
 const severityStyle = {
   high: {
@@ -50,6 +51,7 @@ const deviceIcons = {
 };
 
 export default function SecurityMonitor() {
+  const { success, error } = useToast();
   const [filter, setFilter] = useState('all');
   const [logs, setLogs] = useState([...securityLogs]);
   const filtered = logs.filter((l) => filter === 'all' || l.severity === filter);
@@ -61,15 +63,13 @@ export default function SecurityMonitor() {
   };
 
   const handleBan = (logId, studentName) => {
-    if (confirm('هل تريدين حظر هذا الطالب: ' + studentName + '؟')) {
-      setLogs(logs.filter(l => l.id !== logId));
-      alert('تم حظر الطالب بنجاح وتسجيل خروجه من كل الأجهزة. ⛔');
-    }
+    setLogs(logs.filter(l => l.id !== logId));
+    success(`تم حظر ${studentName} بنجاح`);
   };
 
   const handleDismiss = (logId) => {
     setLogs(logs.filter(l => l.id !== logId));
-    alert('تم تجاهل هذا التنبيه. ✅');
+    success('تم تجاهل التنبيه');
   };
 
   return (
