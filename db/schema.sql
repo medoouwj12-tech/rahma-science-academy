@@ -4,15 +4,7 @@
 -- تشغيل: افتحي SQL Editor في Neon و粘贴ي المحتوى
 -- =============================================
 
--- 1. Auth credentials (للتسجيل المحلي)
-CREATE TABLE IF NOT EXISTS auth_credentials (
-  user_id TEXT PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
-  salt TEXT NOT NULL,
-  password_hash TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
--- 2. Users / Profiles
+-- 1. Users / Profiles (must be first — referenced by other tables)
 CREATE TABLE IF NOT EXISTS profiles (
   id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
@@ -23,6 +15,14 @@ CREATE TABLE IF NOT EXISTS profiles (
   stage TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 2. Auth credentials (للتسجيل المحلي — FK to profiles)
+CREATE TABLE IF NOT EXISTS auth_credentials (
+  user_id TEXT PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
+  salt TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- 3. Courses
