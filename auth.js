@@ -1,4 +1,3 @@
-// Simple in-DB auth (bcrypt-hashed passwords)
 import { neon } from '@neondatabase/serverless';
 import crypto from 'node:crypto';
 
@@ -8,7 +7,6 @@ function getDB() {
   return neon(url);
 }
 
-// Simple salted SHA-256 (replace with bcrypt when in production with real users)
 function hashPassword(password, salt) {
   const s = salt || crypto.randomBytes(16).toString('hex');
   const h = crypto.createHash('sha256').update(password + s).digest('hex');
@@ -35,12 +33,16 @@ export default async function handler(req, res) {
   const { action, email, password, full_name, role, stage } = req.body || {};
 
   try {
+    // تأكد من وجود الجداول
+    await db`CREATE TABLE IF NOT EXISTS auth_credentials (user_id TEXT PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE, salt TEXT NOT NULL, password_hash TEXT NOT NULL, created_at TIMESTAMP DEFAULT NOW())`;
+    await db`CREATE TABLE IF NOT EXISTS profiles (id TEXT PRIMARY KEY, email TEXT UNIQUE NOT NULL, full_name TEXT NOT NULL, role TEXT NOT NULL CHECK (role IN ('student','instructor')), avatar_url TEXT, phone TEXT, stage TEXT, created_at TIMESTAMP DEFAULT NOW(), updated_at TIMESTAMP DEFAULT NOW())`;
+    await db`CREATE EXTENSION IF NOT EXISTS pgcrypto`;
+
     if (action === 'signup') {
       if (!email || !password || !full_name) {
         return res.status(400).json({ error: 'email, password, full_name required' });
       }
 
-      // Check existing
       const existing = await db`SELECT id FROM profiles WHERE email = ${email}`;
       if (existing.length > 0) {
         return res.status(409).json({ error: 'البريد مستخدم بالفعل' });
@@ -48,15 +50,6 @@ export default async function handler(req, res) {
 
       const id = `usr_${crypto.randomBytes(8).toString('hex')}`;
       const { salt, hash } = hashPassword(password);
-
-      await db`
-        CREATE TABLE IF NOT EXISTS auth_credentials (
-          user_id TEXT PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
-          salt TEXT NOT NULL,
-          password_hash TEXT NOT NULL,
-          created_at TIMESTAMP DEFAULT NOW()
-        )
-      `;
 
       const [user] = await db`
         INSERT INTO profiles (id, email, full_name, role, stage)

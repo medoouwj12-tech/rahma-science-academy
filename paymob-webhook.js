@@ -1,4 +1,4 @@
-// Paymob webhook — called when payment completes
+// Paymob webhook — يتم استدعاؤه عند إتمام الدفع
 import { neon } from '@neondatabase/serverless';
 
 function getDB() {
@@ -7,9 +7,7 @@ function getDB() {
   return neon(url);
 }
 
-// Verify HMAC signature
-function verifyHmac(body, hmac) {
-  // Paymob sends these fields concatenated in order — see docs
+async function verifyHmac(body, hmac) {
   const ordered = [
     'amount_cents', 'created_at', 'currency', 'error_occured', 'has_parent_transaction',
     'id', 'integration_id', 'is_3d_secure', 'is_auth', 'is_capture', 'is_refunded',
@@ -24,12 +22,17 @@ function verifyHmac(body, hmac) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(200).end();
+
   if (req.method !== 'POST') return res.status(405).end();
 
   const db = getDB();
   const hmac = req.query.hmac || (req.body && req.body.hmac);
 
-  if (!verifyHmac(req.body || {}, hmac)) {
+  if (!(await verifyHmac(req.body || {}, hmac))) {
     return res.status(401).json({ error: 'Invalid HMAC' });
   }
 
@@ -40,7 +43,6 @@ export default async function handler(req, res) {
   try {
     await db`UPDATE payments SET status = ${success ? 'paid' : 'failed'}, paid_at = NOW() WHERE transaction_id = ${txnId.toString()}`;
 
-    // If paid, auto-enroll student
     if (success) {
       const [payment] = await db`SELECT student_id, course_id FROM payments WHERE transaction_id = ${txnId.toString()}`;
       if (payment && payment.course_id) {

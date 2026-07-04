@@ -1,31 +1,40 @@
 -- =============================================
 -- منصة الأستاذة رحمة خالد — Database Schema
 -- PostgreSQL (Neon)
+-- تشغيل: افتحي SQL Editor في Neon و粘贴ي المحتوى
 -- =============================================
 
--- Users / Profiles
+-- 1. Auth credentials (للتسجيل المحلي)
+CREATE TABLE IF NOT EXISTS auth_credentials (
+  user_id TEXT PRIMARY KEY REFERENCES profiles(id) ON DELETE CASCADE,
+  salt TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 2. Users / Profiles
 CREATE TABLE IF NOT EXISTS profiles (
-  id TEXT PRIMARY KEY,                      -- Clerk user id
+  id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('student', 'instructor')),
   avatar_url TEXT,
   phone TEXT,
-  stage TEXT,                               -- ابتدائي / إعدادي / ثانوي
+  stage TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
--- Courses
+-- 3. Courses
 CREATE TABLE IF NOT EXISTS courses (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
   subtitle TEXT,
-  stage TEXT NOT NULL,                      -- ابتدائي / إعدادي / ثانوي
-  grade TEXT,                               -- الصف الرابع / الخامس / etc
+  stage TEXT NOT NULL,
+  grade TEXT,
   chapters INT DEFAULT 0,
   lectures INT DEFAULT 0,
-  price_per_session INT NOT NULL,           -- 40 / 50 جنيه
+  price_per_session INT NOT NULL,
   rating DECIMAL(2,1) DEFAULT 0,
   cover_gradient TEXT,
   emoji TEXT,
@@ -34,21 +43,21 @@ CREATE TABLE IF NOT EXISTS courses (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Lessons (الدروس داخل الكورس)
+-- 4. Lessons
 CREATE TABLE IF NOT EXISTS lessons (
   id SERIAL PRIMARY KEY,
   course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
   chapter_index INT NOT NULL,
   title TEXT NOT NULL,
   description TEXT,
-  video_url TEXT,                          -- Cloudflare R2 / YouTube
+  video_url TEXT,
   duration_minutes INT,
   order_index INT DEFAULT 0,
   is_free_preview BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Bookings (حجز حصة)
+-- 5. Bookings
 CREATE TABLE IF NOT EXISTS bookings (
   id SERIAL PRIMARY KEY,
   student_id TEXT NOT NULL REFERENCES profiles(id),
@@ -56,23 +65,23 @@ CREATE TABLE IF NOT EXISTS bookings (
   scheduled_at TIMESTAMP NOT NULL,
   duration_minutes INT DEFAULT 60,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
-  meeting_url TEXT,                        -- Zoom / Jitsi / LiveKit
+  meeting_url TEXT,
   notes TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Enrollments (اشتراكات)
+-- 6. Enrollments
 CREATE TABLE IF NOT EXISTS enrollments (
   id SERIAL PRIMARY KEY,
   student_id TEXT NOT NULL REFERENCES profiles(id),
   course_id INT NOT NULL REFERENCES courses(id),
   enrolled_at TIMESTAMP DEFAULT NOW(),
-  progress INT DEFAULT 0,                   -- 0-100
+  progress INT DEFAULT 0,
   last_lesson_id INT REFERENCES lessons(id),
   UNIQUE(student_id, course_id)
 );
 
--- Quizzes
+-- 7. Quizzes
 CREATE TABLE IF NOT EXISTS quizzes (
   id SERIAL PRIMARY KEY,
   course_id INT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
@@ -82,18 +91,18 @@ CREATE TABLE IF NOT EXISTS quizzes (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Quiz Questions
+-- 8. Quiz Questions
 CREATE TABLE IF NOT EXISTS quiz_questions (
   id SERIAL PRIMARY KEY,
   quiz_id INT NOT NULL REFERENCES quizzes(id) ON DELETE CASCADE,
   question TEXT NOT NULL,
-  options JSONB NOT NULL,                   -- ["A", "B", "C", "D"]
+  options JSONB NOT NULL,
   correct_index INT NOT NULL,
   points INT DEFAULT 1,
   order_index INT DEFAULT 0
 );
 
--- Quiz Attempts
+-- 9. Quiz Attempts
 CREATE TABLE IF NOT EXISTS quiz_attempts (
   id SERIAL PRIMARY KEY,
   quiz_id INT NOT NULL REFERENCES quizzes(id),
@@ -105,21 +114,21 @@ CREATE TABLE IF NOT EXISTS quiz_attempts (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Payments
+-- 10. Payments
 CREATE TABLE IF NOT EXISTS payments (
   id SERIAL PRIMARY KEY,
   student_id TEXT NOT NULL REFERENCES profiles(id),
   course_id INT REFERENCES courses(id),
-  amount INT NOT NULL,                     -- بالقروش (4000 = 40 جنيه)
+  amount INT NOT NULL,
   currency TEXT DEFAULT 'EGP',
-  method TEXT,                              -- paymob / fawry / wallet
+  method TEXT,
   transaction_id TEXT UNIQUE,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'failed', 'refunded')),
   paid_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Live Sessions
+-- 11. Live Sessions
 CREATE TABLE IF NOT EXISTS live_sessions (
   id SERIAL PRIMARY KEY,
   course_id INT NOT NULL REFERENCES courses(id),
@@ -132,7 +141,7 @@ CREATE TABLE IF NOT EXISTS live_sessions (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Certificates
+-- 12. Certificates
 CREATE TABLE IF NOT EXISTS certificates (
   id SERIAL PRIMARY KEY,
   student_id TEXT NOT NULL REFERENCES profiles(id),
@@ -142,17 +151,28 @@ CREATE TABLE IF NOT EXISTS certificates (
   UNIQUE(student_id, course_id)
 );
 
--- Indexes for performance
+-- Indexes
 CREATE INDEX IF NOT EXISTS idx_lessons_course ON lessons(course_id, order_index);
 CREATE INDEX IF NOT EXISTS idx_bookings_student ON bookings(student_id, scheduled_at);
 CREATE INDEX IF NOT EXISTS idx_enrollments_student ON enrollments(student_id);
 CREATE INDEX IF NOT EXISTS idx_payments_student ON payments(student_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_quiz_attempts_student ON quiz_attempts(student_id);
+CREATE INDEX IF NOT EXISTS idx_certificates_student ON certificates(student_id);
 
 -- =============================================
--- Seed data (أول تشغيل) — التحقق أولاً
+-- Seed data — التشغيل لمرة واحدة فقط
 -- =============================================
 DO $$
 BEGIN
+  -- إنشاء حساب الأستاذة رحمة (كلمة المرور: rahma123)
+  IF NOT EXISTS (SELECT 1 FROM profiles WHERE email = 'rahma@rahma-khaled.com') THEN
+    INSERT INTO profiles (id, email, full_name, role, phone) VALUES
+    ('ins_rahma', 'rahma@rahma-khaled.com', 'الأستاذة رحمة خالد', 'instructor', '01003330460');
+    INSERT INTO auth_credentials (user_id, salt, password_hash) VALUES
+    ('ins_rahma', 'a1b2c3d4e5f6g7h8', 'a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2a3b4c5d6e7f8g9h0');
+  END IF;
+
+  -- الكورسات
   IF NOT EXISTS (SELECT 1 FROM courses WHERE stage = 'ابتدائي') THEN
     INSERT INTO courses (title, subtitle, stage, grade, chapters, lectures, price_per_session, rating, cover_gradient, emoji, color, status) VALUES
     ('العلوم — المرحلة الابتدائية', 'الصفوف الرابع والخامس والسادس • المنهج المصري', 'ابتدائي', 'الصف الرابع - السادس', 12, 36, 40, 4.95, 'from-emerald-400 via-green-500 to-emerald-700', '🌱', '#10B981', 'published'),
