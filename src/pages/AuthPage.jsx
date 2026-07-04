@@ -23,7 +23,7 @@ import { useAuth } from '../lib/auth';
 export default function AuthPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, demoLogin } = useAuth();
   const initialMode = params.get('signup') ? 'signup' : 'signin';
   const [mode, setMode] = useState(initialMode);
   const [role, setRole] = useState('student');
@@ -316,6 +316,25 @@ export default function AuthPage() {
               </button>
             </motion.form>
           </AnimatePresence>
+
+          {/* Demo login */}
+          <div className="mt-4 rounded-2xl border border-gold-400/20 bg-gold-400/5 p-3 text-center">
+            <p className="mb-2 text-xs text-white/60">للاختبار التجريبي بدون خادم (Server):</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { demoLogin('student'); navigate('/student'); }}
+                className="btn-ghost-gold flex-1 justify-center py-2 text-xs border-white/10 hover:border-gold-400/40"
+              >
+                دخول كطالبة
+              </button>
+              <button
+                onClick={() => { demoLogin('instructor'); navigate('/instructor'); }}
+                className="btn-ghost-gold flex-1 justify-center py-2 text-xs border-white/10 hover:border-gold-400/40"
+              >
+                دخول كأستاذة
+              </button>
+            </div>
+          </div>
 
           {/* Footer perks */}
           <div className="mt-6 grid grid-cols-3 gap-2 border-t border-white/5 pt-5">

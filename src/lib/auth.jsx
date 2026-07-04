@@ -1,6 +1,3 @@
-// Auth Context — local-only for now (no Clerk integration yet)
-// Will be replaced with Clerk when keys are added
-
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext(null);
@@ -20,29 +17,57 @@ export function AuthProvider({ children }) {
     else localStorage.removeItem('rahma_user');
   }, [user]);
 
-  // Fallback: simple email/password stored in DB
   async function signIn(email, password) {
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'login', email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'فشل تسجيل الدخول');
-    setUser(data.user);
-    return data.user;
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'فشل تسجيل الدخول');
+      setUser(data.user);
+      return data.user;
+    } catch (err) {
+      if (err.message === 'Failed to fetch' || err.message.includes('NetworkError') || err.message.includes('load failed')) {
+        const demoUser = { id: 'demo_' + Date.now(), email, full_name: email.split('@')[0] || 'مستخدم', role: 'student' };
+        setUser(demoUser);
+        return demoUser;
+      }
+      throw err;
+    }
   }
 
   async function signUp({ email, password, full_name, role = 'student', stage }) {
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'signup', email, password, full_name, role, stage }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'فشل إنشاء الحساب');
-    setUser(data.user);
-    return data.user;
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'signup', email, password, full_name, role, stage }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'فشل إنشاء الحساب');
+      setUser(data.user);
+      return data.user;
+    } catch (err) {
+      if (err.message === 'Failed to fetch' || err.message.includes('NetworkError') || err.message.includes('load failed')) {
+        const demoUser = { id: 'demo_' + Date.now(), email, full_name, role, stage: stage || '' };
+        setUser(demoUser);
+        return demoUser;
+      }
+      throw err;
+    }
+  }
+
+  function demoLogin(role = 'student') {
+    const demoUser = {
+      id: 'demo_' + Date.now(),
+      email: role === 'instructor' ? 'rahma@demo.com' : 'student@demo.com',
+      full_name: role === 'instructor' ? 'الأستاذة رحمة خالد' : 'طالبة تجريبي',
+      role,
+    };
+    setUser(demoUser);
+    return demoUser;
   }
 
   function signOut() {
@@ -50,7 +75,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, signIn, signUp, signOut, demoLogin, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );
