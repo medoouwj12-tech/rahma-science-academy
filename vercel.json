@@ -1,6 +1,18 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/api/auth", "destination": "/auth" },
+    { "source": "/api/courses", "destination": "/courses" },
+    { "source": "/api/lessons", "destination": "/lessons" },
+    { "source": "/api/enrollments", "destination": "/enrollments" },
+    { "source": "/api/bookings", "destination": "/bookings" },
+    { "source": "/api/payments", "destination": "/payments" },
+    { "source": "/api/checkout", "destination": "/checkout" },
+    { "source": "/api/paymob-webhook", "destination": "/paymob-webhook" },
+    { "source": "/api/live", "destination": "/live" },
+    { "source": "/api/quizzes", "destination": "/quizzes" },
+    { "source": "/api/certificates", "destination": "/certificates" },
+    { "source": "/api/stats", "destination": "/stats" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
